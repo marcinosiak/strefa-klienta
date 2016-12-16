@@ -1,0 +1,33 @@
+#domyślnie wyświetlany plik
+DirectoryIndex index.php
+
+#włczam moduł
+RewriteEngine on
+
+#Warunek sprawdza, czy przypadkiem nie odwołujemy się do istniejącego pliku.
+#RewriteCond %{REQUEST_FILENAME} !-f
+
+#Warunek sprawdza, czy przypadkiem nie odwołujemy się do istniejącego folderu.
+#RewriteCond %{REQUEST_FILENAME} !-d
+
+
+
+
+#RewriteRule ^([0-9a-zA-Z_-]+)/?$ $1.php
+
+#ustawiam przekierowanie do panelu admina
+RewriteRule ^admin-panel/?$  admin-panel/index.php
+
+#ustawiam przekierowanie do plików w katalogu admin-panel/
+RewriteRule ^admin-panel/([a-z0-9\-]+)/?$  admin-panel/$1.php
+
+#informuję serwer, iż przy próbie dostępu do plików ustawionych w regułach powinna zostać wyświetlona zawartość pliku index.php
+#RewriteRule ^[a-z0-9\-/]+\.html$  index.php
+#RewriteRule ^[a-z0-9\-/]+\.php$  index.php
+RewriteRule ^[a-z0-9\-/]+$  index.php
+
+
+
+
+
+
