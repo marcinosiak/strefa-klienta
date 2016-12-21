@@ -1,7 +1,7 @@
-<?php 
+<?php
 	session_start();
 	//print_r($_REQUEST);
-	
+
 	require_once('class/class.db.php');
 	require_once('class/class.cart.php');
 
@@ -11,7 +11,7 @@
 	{
 		$cart->setCartId();
 		$_SESSION['cart_id'] = $cart->getCartId();
-	}	
+	}
 
 	if(isset($_GET['action']))
 	{
@@ -31,11 +31,11 @@
 				$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}'");
 				echo $count->num_rows;
 			}
-			
+
 
 			//echo "<br>" . $_POST['path'];
-			
+
 		}
 	}
-	
+
 	//var_dump($_SESSION);

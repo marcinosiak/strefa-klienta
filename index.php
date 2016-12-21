@@ -27,6 +27,7 @@
 	//pobieram adres strony do wyświetlenia
 	$adres = new Adres();
 	$strona = $adres->getStrona();
+	$katalog = $adres->getKatalog();
 
 	//szukam w bazie strony do wyświetlenia
 	$result = $db->queryDb("SELECT title, content, folder, pass FROM strony WHERE url_text='$strona' OR url='$strona'");
@@ -44,7 +45,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php echo $view->header(); ?>
+<?php echo $view->showHeader(); ?>
 
 <body>
 
@@ -65,7 +66,7 @@
 			}
 		</script>
 
-		<a>Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
+		<a href="cart">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
 
 		<?php
 
@@ -73,9 +74,7 @@
 		{
 			while ($row = $result->fetch_object())
 			{
-
 				echo "<h1> {$row->title} </h1>";
-
 
 				//czy strona jest zabezpieczona hasłem? Jeśli nie to wyświetl ja
 				if ($row->pass == "")
@@ -88,13 +87,12 @@
 					if(!$row->folder == "")
 					{
 						$folder = new Folder($row->folder);
-
 						echo '<div class="row gallery">';
 
 						foreach ($folder->getFiles() as $file)
 						{
 							//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
-							echo $view->gallery($folder->getPath(), $file);
+							echo $view->showGallery($folder->getPath(), $file);
 						}
 
 						echo '</div>';
@@ -105,8 +103,6 @@
 					}
 					//--------------------------------------------------------------------
 				}
-
-
 
 
 				//storna jest zabezpieczona hasłem
@@ -121,20 +117,18 @@
 						if ($pass_site == $row->pass)
 						{
 							//------------- zdublowany blok kodu -------------------------------
-
 							echo $row->content;
 
 							//czy jest folder ze zdjęciami?
 							if(!$row->folder == "")
 							{
 								$folder = new Folder($row->folder);
-
 								echo '<div class="row gallery">';
 
 								foreach ($folder->getFiles() as $file)
 								{
 									//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
-									echo $view->gallery($folder->getPath(), $file);
+									echo $view->showGallery($folder->getPath(), $file);
 								}
 
 								echo '</div>';
@@ -158,10 +152,46 @@
 						echo $view->passForm();
 					}
 				}
-
-
-
 			}
+		}
+		// Wyświetla aktualną zawartość koszyka
+		//Jeśli adres w przeglądarce jest = nazwa_domeny/strefa-klienta/cart
+		elseif($strona == $katalog . "cart")
+		{
+			echo "<h1> Koszyk </h1>";
+
+			echo
+				"
+					<table class='table'>
+				 		<tr class='active'>
+							<th class='col-xs-2'>Zdjęcie</th> <th>Nazwa zdjęcia</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Wartość</th>
+						</tr>
+				";
+
+			while ($item = $count->fetch_object())
+			{
+				echo
+					"
+						<tr>
+							<td><div><img src='{$item->photo}' class='img-responsive'></div></td>
+							<td>{$item->photo} <div><button type='submit' class='btn btn-xs rm-form-cart'> <span>X</span> Usuń z koszyka</button></div> </td>
+							<td>10x15</td>
+							<td>2.50 zł</td>
+							<td>2 szt.</td>
+							<td><b>5.00 zł</b></td>
+						</tr>
+					";
+			}
+
+			echo
+				"
+				 		<tr class='active'>
+							<th colspan='4'></th> <th>Łącznie</th> <th>1 500.00 zł</th>
+						</tr>
+				";
+
+			echo "</table>";
+
 		}
 		else
 		{

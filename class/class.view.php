@@ -3,7 +3,7 @@
 	class View
 	{
 
-		public function header()
+		public function showHeader()
 		{
 			return '
 				<head>
@@ -60,13 +60,12 @@
 		}
 
 
-		public function gallery($path, $file)
+		public function showGallery($path, $file)
 		{
 			return '
 				<div class="col-md-12 item-photo">
 					<div class="img-shop">
 						<img src="' . $path . $file . '" class="img-responsive" alt="Responsive image">
-						<!--<button class="btn btn-primary" type="submit" onclick="addToCart(\' ' . $path . $file . ' \')">Dodaj do koszyka</button>-->
 						<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#modal_' . substr($file, 0, -4) . '">Dodaj do koszyka</button>
 					</div>
 
@@ -90,6 +89,12 @@
 
 				</div>
 			';
+		}
+
+
+		public function showCart()
+		{
+			echo "Koszyczek";
 		}
 
 	}

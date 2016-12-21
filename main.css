@@ -38,3 +38,25 @@
 	display: block;
 	width: auto;
 }
+
+button.rm-form-cart
+{
+	margin-top: 10px;
+	background-color: #ffffff;
+	border-color: #999;
+}
+
+button.rm-form-cart:hover
+{
+	background-color: #2780e3;
+}
+
+button.rm-form-cart > span
+{
+	color: red;
+}
+
+button.rm-form-cart:hover > span
+{
+	color: white;
+}
