@@ -92,9 +92,18 @@
 		}
 
 
-		public function showCart()
+		public function showCart($photo)
 		{
-			echo "Koszyczek";
+			return '
+				<tr>
+					<td><div><img src="' . $photo . '" class="img-responsive"></div></td>
+					<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart"> <span>X</span> Usuń z koszyka</button></div> </td>
+					<td>10x15</td>
+					<td>2.50 zł</td>
+					<td>2 szt.</td>
+					<td><b>5.00 zł</b></td>
+				</tr>
+			';
 		}
 
 	}

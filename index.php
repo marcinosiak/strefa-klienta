@@ -158,40 +158,31 @@
 		//Jeśli adres w przeglądarce jest = nazwa_domeny/strefa-klienta/cart
 		elseif($strona == $katalog . "cart")
 		{
-			echo "<h1> Koszyk </h1>";
-
+			//wyświetla nagłówek tabeli
 			echo
 				"
+					<h1> Koszyk </h1>
 					<table class='table'>
 				 		<tr class='active'>
 							<th class='col-xs-2'>Zdjęcie</th> <th>Nazwa zdjęcia</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Wartość</th>
 						</tr>
 				";
 
+			//wyświetla pozycje w koszyku
 			while ($item = $count->fetch_object())
 			{
-				echo
-					"
-						<tr>
-							<td><div><img src='{$item->photo}' class='img-responsive'></div></td>
-							<td>{$item->photo} <div><button type='submit' class='btn btn-xs rm-form-cart'> <span>X</span> Usuń z koszyka</button></div> </td>
-							<td>10x15</td>
-							<td>2.50 zł</td>
-							<td>2 szt.</td>
-							<td><b>5.00 zł</b></td>
-						</tr>
-					";
+					echo $view->showCart($item->photo);
 			}
 
+			//wyświetla stopkę tabeli
 			echo
 				"
-				 		<tr class='active'>
-							<th colspan='4'></th> <th>Łącznie</th> <th>1 500.00 zł</th>
-						</tr>
+			 		<tr class='active'>
+						<th colspan='4'></th> <th>Łącznie</th> <th>1 500.00 zł</th>
+					</tr>
+
+					</table>
 				";
-
-			echo "</table>";
-
 		}
 		else
 		{
