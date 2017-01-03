@@ -158,31 +158,42 @@
 		//Jeśli adres w przeglądarce jest = nazwa_domeny/strefa-klienta/cart
 		elseif($strona == $katalog . "cart")
 		{
-			//wyświetla nagłówek tabeli
-			echo
-				"
-					<h1> Koszyk </h1>
-					<table class='table'>
-				 		<tr class='active'>
-							<th class='col-xs-2'>Zdjęcie</th> <th>Nazwa zdjęcia</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Wartość</th>
-						</tr>
-				";
-
-			//wyświetla pozycje w koszyku
-			while ($item = $count->fetch_object())
+			if(isset($_SESSION['cart_id']))
 			{
-					echo $view->showCart($item->photo);
+				//wyświetla nagłówek tabeli
+				echo
+					"
+						<h1> Koszyk </h1>
+						<table class='table'>
+					 		<tr class='active'>
+								<th class='col-xs-2'>Zdjęcie</th> <th>Nazwa zdjęcia</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Wartość</th>
+							</tr>
+					";
+
+				//wyświetla pozycje w koszyku
+				if (isset($count))
+				{
+					while ($item = $count->fetch_object())
+					{
+							echo $view->showCart($item->photo);
+					}
+				}
+
+				//wyświetla stopkę tabeli
+				echo
+					"
+				 		<tr class='active'>
+							<th colspan='4'></th> <th>Łącznie</th> <th>1 500.00 zł</th>
+						</tr>
+
+						</table>
+					";
 			}
-
-			//wyświetla stopkę tabeli
-			echo
-				"
-			 		<tr class='active'>
-						<th colspan='4'></th> <th>Łącznie</th> <th>1 500.00 zł</th>
-					</tr>
-
-					</table>
-				";
+			else {
+				{
+					echo $view->alertInfo('Twoj koszyk jest pusty.');
+				}
+			}
 		}
 		else
 		{
