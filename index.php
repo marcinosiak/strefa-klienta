@@ -12,8 +12,7 @@
 	/* rozpocznij sesję */
 	session_start();
 
-
-	print_r($_SESSION);
+	var_dump($_SESSION);
 
 	require_once('class/class.adres.php');
 	require_once('class/class.db.php');
@@ -28,10 +27,10 @@
 	$adres = new Adres();
 	$strona = $adres->getStrona();
 	$katalog = $adres->getKatalog();
+	$url = $adres->getUrl();
 
 	//szukam w bazie strony do wyświetlenia
-	$result = $db->queryDb("SELECT title, content, folder, pass FROM strony WHERE url_text='$strona' OR url='$strona'");
-
+	$result = $db->queryDb("SELECT url_text, title, content, folder, pass FROM strony WHERE url_text='$strona' OR url='$strona'");
 
 	if(isset($_SESSION['cart_id']))
 	{
@@ -72,6 +71,9 @@
 
 		if ($result->num_rows == 1)
 		{
+			//ustawiam adres tej strony jako poprzednia strona - potrzebna do wyświetlaenia w koszyku, aby zrobić powrót do poprzedniej strony
+			$_SESSION['referer'] = $url;
+
 			while ($row = $result->fetch_object())
 			{
 				echo "<h1> {$row->title} </h1>";
@@ -189,17 +191,21 @@
 						</table>
 					";
 			}
-			else {
-				{
-					echo $view->alertInfo('Twoj koszyk jest pusty.');
-				}
+			else
+			{
+				echo $view->alertInfo('Twoj koszyk jest pusty.');
 			}
+
+
+			echo "<a class='btn btn-default' href='http://" . $_SESSION["referer"] . "' role='button'>Wróć do galerii</a>";
+
 		}
 		else
 		{
 			//header("HTTP/1.0 404 Not Found");
 			echo $view->alertInfo('404 Nie znalazłem takiej strony');
 		}
+
 		?>
 
 	</div>

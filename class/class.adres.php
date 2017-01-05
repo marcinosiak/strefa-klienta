@@ -7,7 +7,6 @@
 		private $strona;	//ścieżka dostępu do zasobu , np. /wiki/URL
 		private $katalog = "/strefa-klienta/";  //jeśli adres url jest w postaci np. http://www.wikipedia.com/wiki/index.php - to /wiki/ jest katalogiem
 
-
 		/**
 		 * konstruktor ustwia hosta i nazwę strony do wyświetlenia, ktora została wpisana w pasku pzeglądarki
 		 */
@@ -74,5 +73,6 @@
 		{
 			return "http://" . $this->host . $this->katalog;
 		}
+
 
 	}
