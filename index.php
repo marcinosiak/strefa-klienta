@@ -2,12 +2,12 @@
 	error_reporting(E_ALL - E_WARNING);
 
 	/* ustaw ogranicznik pamięci podręcznej na 'private' */
-	session_cache_limiter('private');
-	$cache_limiter = session_cache_limiter();
+//	session_cache_limiter('private');
+//	$cache_limiter = session_cache_limiter();
 
 	/* ustaw czas przedawnienia pamięci podręcznej na 30 minut */
-	session_cache_expire(30);
-	$cache_expire = session_cache_expire();
+	//session_cache_expire(30);
+	//$cache_expire = session_cache_expire();
 
 	/* rozpocznij sesję */
 	session_start();
@@ -35,14 +35,14 @@
 	if(isset($_SESSION['cart_id']))
 	{
 		//liczę ilość pozycji w koszyku dla podanego id koszyka
-		$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}'");
+		$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
 	}
 
 	$view = new View();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 
 <?php echo $view->showHeader(); ?>
 
@@ -50,13 +50,13 @@
 
 	<div class="container">
 
-		<!-- skrypt wywołuje cart.php i zwiększa licznik pozycji w koszyku -->
+		<!-- skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku -->
 		<script>
 			function addToCart(path)
 			{
 				$.ajax({
 					type: 'post',
-					url: 'cart.php?action=add',
+					url: 'cart-action.php?action=add',
 					data: {'path':path},
 					success: function(sucdata){
 						$(".counter").html(sucdata);
@@ -65,20 +65,27 @@
 			}
 		</script>
 
-		<a href="cart">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
+		<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
 
 		<?php
 
+		//ustawiam adres tej strony jako poprzednia strona - potrzebna do wyświetlaenia w koszyku, aby zrobić powrót do poprzedniej strony
+		// if(isset($_SESSION['referer'])){
+		// 	$_SESSION['referer'] = $url;
+		// }
+		// else{
+		// 	$_SESSION['referer'] = "http://annaosiak.pl/strefa-klienta";
+		// }
+
 		if ($result->num_rows == 1)
 		{
-			//ustawiam adres tej strony jako poprzednia strona - potrzebna do wyświetlaenia w koszyku, aby zrobić powrót do poprzedniej strony
 			$_SESSION['referer'] = $url;
 
 			while ($row = $result->fetch_object())
 			{
 				echo "<h1> {$row->title} </h1>";
 
-				//czy strona jest zabezpieczona hasłem? Jeśli nie to wyświetl ja
+				//czy strona bez hasła
 				if ($row->pass == "")
 				{
 					//------------- zdublowany blok kodu -------------------------------
@@ -155,50 +162,6 @@
 					}
 				}
 			}
-		}
-		// Wyświetla aktualną zawartość koszyka
-		//Jeśli adres w przeglądarce jest = nazwa_domeny/strefa-klienta/cart
-		elseif($strona == $katalog . "cart")
-		{
-			if(isset($_SESSION['cart_id']))
-			{
-				//wyświetla nagłówek tabeli
-				echo
-					"
-						<h1> Koszyk </h1>
-						<table class='table'>
-					 		<tr class='active'>
-								<th class='col-xs-2'>Zdjęcie</th> <th>Nazwa zdjęcia</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Wartość</th>
-							</tr>
-					";
-
-				//wyświetla pozycje w koszyku
-				if (isset($count))
-				{
-					while ($item = $count->fetch_object())
-					{
-							echo $view->showCart($item->photo);
-					}
-				}
-
-				//wyświetla stopkę tabeli
-				echo
-					"
-				 		<tr class='active'>
-							<th colspan='4'></th> <th>Łącznie</th> <th>1 500.00 zł</th>
-						</tr>
-
-						</table>
-					";
-			}
-			else
-			{
-				echo $view->alertInfo('Twoj koszyk jest pusty.');
-			}
-
-
-			echo "<a class='btn btn-default' href='http://" . $_SESSION["referer"] . "' role='button'>Wróć do galerii</a>";
-
 		}
 		else
 		{

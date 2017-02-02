@@ -73,7 +73,7 @@
 						<div class="modal-dialog">
 							<div class="modal-content">
 								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 									<h4 class="modal-title">' . substr($file, 0, -4) . '</h4>
 								</div>
 								<div class="modal-body">
@@ -92,18 +92,21 @@
 		}
 
 
-		public function showCart($photo)
+		public function showCart($photo, $id)
 		{
+			//<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\')"> <span>&times;</span> Usuń z koszyka</button></div> </td>
 			return '
 				<tr>
 					<td><div><img src="' . $photo . '" class="img-responsive"></div></td>
-					<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart"> <span>X</span> Usuń z koszyka</button></div> </td>
+					<td>' . $photo . '<div><a type="submit" class="btn btn-xs rm-form-cart" href="cart-show.php?action=del&id='. $id .'&photo='. $photo .'"> <span>&times;</span> Usuń z koszyka</a></div> </td>
 					<td>10x15</td>
 					<td>2.50 zł</td>
 					<td>2 szt.</td>
 					<td><b>5.00 zł</b></td>
 				</tr>
 			';
+			//http://fczaja.blogspot.com/2011/07/php-how-to-send-post-request-with.html
+			//http://stackoverflow.com/questions/3080146/post-data-to-a-url-in-php
 		}
 
 	}

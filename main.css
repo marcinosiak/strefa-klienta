@@ -39,24 +39,25 @@
 	width: auto;
 }
 
-button.rm-form-cart
+a.rm-form-cart
 {
 	margin-top: 10px;
 	background-color: #ffffff;
 	border-color: #999;
 }
 
-button.rm-form-cart:hover
+a.rm-form-cart:hover
 {
 	background-color: #2780e3;
 }
 
-button.rm-form-cart > span
+a.rm-form-cart > span
 {
 	color: red;
+	font-size: 1.3em;
 }
 
-button.rm-form-cart:hover > span
+a.rm-form-cart:hover > span
 {
 	color: white;
 }
