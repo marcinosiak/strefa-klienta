@@ -92,13 +92,14 @@
 		}
 
 
-		public function showCart($photo, $id)
+		public function showCart($photo, $id, $item)
 		{
 			//<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\')"> <span>&times;</span> Usuń z koszyka</button></div> </td>
+			//<td>' . $photo . '<div><a type="submit" class="btn btn-xs rm-form-cart" href="cart-show.php?action=del&id='. $id .'&photo='. $photo .'"> <span>&times;</span> Usuń z koszyka</a></div> </td>
 			return '
-				<tr>
+				<tr id="item-'.$item.'">
 					<td><div><img src="' . $photo . '" class="img-responsive"></div></td>
-					<td>' . $photo . '<div><a type="submit" class="btn btn-xs rm-form-cart" href="cart-show.php?action=del&id='. $id .'&photo='. $photo .'"> <span>&times;</span> Usuń z koszyka</a></div> </td>
+					<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\', \'' . $id . '\')"> <span>&times;</span> Usuń z koszyka</button></div> </td>
 					<td>10x15</td>
 					<td>2.50 zł</td>
 					<td>2 szt.</td>

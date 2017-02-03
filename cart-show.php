@@ -25,6 +25,25 @@
 
 		<div class="container">
 
+			<!-- skrypt wywołuje cart-action.php i usuwa pozycję z koszyka -->
+			<script>
+				function delFromCart(path, id)
+				{
+					var _id = id;
+					$.ajax({
+						type: 'post',
+						url: 'cart-action.php?action=del',
+						data: {'path':path, 'id':id},
+						success: function(sucdata){
+							$(".counter").html(sucdata);
+							$("#item-" + _id).remove();
+							//alert("item-" + _id);
+						}
+					});
+				}
+			</script>
+
+
 			<?php
 				if(isset($_SESSION['cart_id']))
 				{
@@ -85,7 +104,7 @@
 					{
 						while ($item = $count->fetch_object())
 						{
-								echo $view->showCart($item->photo, $item->id);
+								echo $view->showCart($item->photo, $item->id, $item->id);
 								//echo $view->showCart(trim($item->photo));
 						}
 					}
@@ -105,7 +124,15 @@
 					echo $view->alertInfo('Twoj koszyk jest pusty.');
 				}
 
-				echo "<a class='btn btn-default' href='http://" . $_SESSION["referer"] . "' role='button'>Wróć do galerii</a>";
+				if(isset($_SESSION["referer"]))
+				{
+					echo "<a class='btn btn-default' href='http://" . $_SESSION["referer"] . "' role='button'>Wróć do galerii</a>";
+				}
+				else
+				{
+					echo "<a class='btn btn-default' href='http://annaosiak.pl/oferta' role='button'>Zobacz ofertę</a>";
+				}
+
 				//echo "<input class='btn btn-default' type='button' value='Wróć do galerii' onClick='history.back();' />";
 
 			?>

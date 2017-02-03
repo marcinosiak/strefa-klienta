@@ -22,7 +22,7 @@
 		//sprawdzam zmienne
 		$cart_id = $mysqli->real_escape_string($_SESSION['cart_id']);
 		$photo = trim($mysqli->real_escape_string($_POST['path']));
-
+		
 		if($_GET['action'] == "add")
 		{
 			//dodaję do bazy
@@ -35,7 +35,18 @@
 			}
 		}
 
-
+		if($_GET['action'] == "del")
+		{
+			$id = $mysqli->real_escape_string($_POST['id']);
+			//aktualizuję bazę
+			if ($db->queryDb("UPDATE cart SET status='0' WHERE cart_id='{$cart_id}' AND id='{$id}' AND photo='{$photo}' "))
+			{
+				//sprawdzam aktualną ilość pozycji w koszyku
+				$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
+				//zwracam ilość pozycji do skryptu .js
+				echo $count->num_rows;
+			}
+		}
 
 	}
 

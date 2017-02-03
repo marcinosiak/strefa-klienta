@@ -24,10 +24,6 @@ RewriteRule ^admin-panel/([a-z0-9\-]+)/?$  admin-panel/$1.php
 #informuję serwer, iż przy próbie dostępu do plików ustawionych w regułach powinna zostać wyświetlona zawartość pliku index.php
 #RewriteRule ^[a-z0-9\-/]+\.html$  index.php
 #RewriteRule ^[a-z0-9\-/]+\.php$  index.php
+
+RewriteRule cart-show$  cart-show.php
 RewriteRule ^[a-z0-9\-/]+$  index.php
-
-
-
-
-
-
