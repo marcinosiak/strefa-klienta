@@ -1,4 +1,8 @@
 <?php
+
+	//przy każdym włączeniu przeglądarki sesja jest kończona
+	ini_set('session.cookie_lifetime',0);
+
 	session_start();
 	//print_r($_REQUEST);
 
@@ -22,7 +26,7 @@
 		//sprawdzam zmienne
 		$cart_id = $mysqli->real_escape_string($_SESSION['cart_id']);
 		$photo = trim($mysqli->real_escape_string($_POST['path']));
-		
+
 		if($_GET['action'] == "add")
 		{
 			//dodaję do bazy

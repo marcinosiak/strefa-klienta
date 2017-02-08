@@ -9,6 +9,9 @@
 	//session_cache_expire(30);
 	//$cache_expire = session_cache_expire();
 
+	//przy każdym włączeniu przeglądarki sesja jest kończona
+	ini_set('session.cookie_lifetime',0);
+
 	/* rozpocznij sesję */
 	session_start();
 
@@ -102,6 +105,7 @@
 						{
 							//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
 							echo $view->showGallery($folder->getPath(), $file);
+							//echo $view->showGallery($folder->getPath(), $file, $oferta);
 						}
 
 						echo '</div>';

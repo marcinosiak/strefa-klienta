@@ -61,3 +61,17 @@ button.rm-form-cart:hover > span
 {
 	color: white;
 }
+
+.row-modal
+{
+	min-height: 2.3em;
+}
+
+input.sztuki
+{
+	width: 4em;
+}
+
+input[type="checkbox"] {
+	float: right;
+}

@@ -1,2 +1,3 @@
 okna modalne
 http://nafrontendzie.pl/okna-modalne-bootstrap-wtyczka-jquery/
+http://v4-alpha.getbootstrap.com/components/modal/#live-demo

@@ -1,6 +1,9 @@
 <?php
 	error_reporting(E_ALL - E_WARNING);
 
+	//przy każdym włączeniu przeglądarki sesja jest kończona
+	ini_set('session.cookie_lifetime',0);
+
 	session_start();
 
 	var_dump($_SESSION);
@@ -37,49 +40,16 @@
 						success: function(sucdata){
 							$(".counter").html(sucdata);
 							$("#item-" + _id).remove();
-							//alert("item-" + _id);
 						}
 					});
 				}
 			</script>
 
-
 			<?php
 				if(isset($_SESSION['cart_id']))
 				{
-					if(isset($_GET['action']))
-					{
-						if($_GET['action'] == "del")
-						{
-							if(isset($_GET['id']))
-							{
-								$id = $mysqli->real_escape_string($_GET['id']);
-								//$id = "milion";
-							}
-
-							$cart_id = $mysqli->real_escape_string($_SESSION['cart_id']);
-
-							if(isset($_GET['photo']))
-							{
-								$photo = $mysqli->real_escape_string($_GET['photo']);
-
-								//aktualizuję rekord
-								if ($exe = $db->queryDb("UPDATE cart SET status='0' WHERE cart_id='{$_SESSION['cart_id']}' AND id='{$id}' AND photo='{$photo}' "))
-								{
-									echo $view->alertInfo('Pozycja została usunięta');
-									//echo $view->alertInfo($exe);
-								}
-								else
-								{
-									echo $view->alertInfo('Nie mogę usunąć tej pozycji');
-									//echo $view->alertInfo($exe);
-									//var_dump($exe);
-								}
-							}
-						}
-					}
 					//liczę ilość pozycji w koszyku dla podanego id koszyka
-					$count = $db->queryDb("SELECT id, photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
+					$count = $db->queryDb("SELECT photo, id FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
 				}
 			?>
 

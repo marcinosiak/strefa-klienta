@@ -1,5 +1,7 @@
 <?php
 
+	require_once('class/class.offer.php');
+
 	class View
 	{
 
@@ -70,14 +72,14 @@
 					</div>
 
 					<div class="modal fade" id="modal_' . substr($file, 0, -4) . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-						<div class="modal-dialog">
+						<div class="modal-dialog modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 									<h4 class="modal-title">' . substr($file, 0, -4) . '</h4>
 								</div>
 								<div class="modal-body">
-									One fine body…
+								'. $this->showOferta() .'
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-default" data-dismiss="modal">Wróć do galerii</button>
@@ -91,6 +93,88 @@
 			';
 		}
 
+		private function showOferta()
+		{
+			// $offer = new Offer();
+			//
+			// $oferta = '<div class="container-fluid">';
+			//
+			// $oferta .= '<div class="row row-modal"><strong><div class="col-md-3">Zdjęcie portretowe</div><div class="col-md-3">Format</div> <div class="col-md-3">Cena</div><div class="col-md-3">Ilość</div></strong></div>';
+			//
+			// foreach ($offer->getZdjeciaPortretowe() as $format => $cena)
+			// {
+			// 	$oferta .= '<div class="row row-modal"><div class="col-md-3 col-md-offset-3">'.$format.' cm</div> <div class="col-md-3">'.$cena.' zł</div><div class="col-md-3"><input class="sztuki" type="text" name="szt" value="1" /></div></div>';
+			// }
+			//
+			// $oferta .= '<div class="row row-modal"><strong><div class="col-md-3">Kartka świąteczna</div> <div class="col-md-3">Format</div> <div class="col-md-3">Cena</div><div class="col-md-3">Ilość</div></strong></div>';
+			//
+			// foreach ($offer->getKartkaSwiateczna() as $format => $cena)
+			// {
+			// 	$oferta .= '<div class="row row-modal"><div class="col-md-3 col-md-offset-3">'.$format.' cm</div> <div class="col-md-3">'.$cena.' zł</div><div class="col-md-3"><input class="sztuki" type="text" name="szt" value="1" /></div></div>';
+			// }
+			//
+			// $oferta .= '<div class="row row-modal"><strong><div class="col-md-3">Zestaw kartek świątecznych</div> <div class="col-md-3">Format</div> <div class="col-md-3">Cena</div><div class="col-md-3">Ilość</div></strong></div>';
+			//
+			// foreach ($offer->getZestawKartek() as $format => $cena)
+			// {
+			// 	$oferta .= '<div class="row row-modal"><div class="col-md-3 col-md-offset-3">'.$format.' cm</div> <div class="col-md-3">'.$cena.' zł</div><div class="col-md-3">7 szt.</div></div>';
+			// }
+			//
+			// $oferta .= '<div class="row row-modal"><strong><div class="col-md-3">Zdjęcie do portfela</div> <div class="col-md-3">Format</div> <div class="col-md-3">Cena</div><div class="col-md-3">Ilość</div></strong></div>';
+			//
+			// foreach ($offer->getZdjecieDoPortfela() as $format => $cena)
+			// {
+			// 	$oferta .= '<div class="row row-modal"><div class="col-md-3 col-md-offset-3">'.$format.' cm</div> <div class="col-md-3">'.$cena.' zł</div><div class="col-md-3">10 szt.</div></div>';
+			// }
+			//
+			// $oferta .= '<div class="row row-modal"><strong><div class="col-md-3">Zdjęcie grupowe</div> <div class="col-md-3">Format</div> <div class="col-md-3">Cena</div><div class="col-md-3">Ilość</div></strong></div>';
+			//
+			// foreach ($offer->getZdjecieGrupowe() as $format => $cena)
+			// {
+			// 	$oferta .= '<div class="row row-modal"><div class="col-md-3 col-md-offset-3">'.$format.' cm</div> <div class="col-md-3">'.$cena.' zł</div><div class="col-md-3"><input class="sztuki" type="text" name="szt" value="1" /> szt.</div></div>';
+			// }
+			//
+			// $oferta .= '</div> <!-- end container-fluid -->';
+			//
+
+			$oferta = '<table class="table table-striped">';
+			$oferta .= '<tr> <th></th> <th>Format</th> <th>Cena</th> <th>Ilość</th> </tr>';
+
+			$oferta .= $this->showOfertaForeach("ZdjeciaPortretowe", "Zdjęcie portretowe");
+			$oferta .= $this->showOfertaForeach("KartkaSwiateczna", "Kartka świąteczna");
+			$oferta .= $this->showOfertaForeach("ZestawKartek", "Zestaw 6 kartek świątecznych");
+			$oferta .= $this->showOfertaForeach("ZdjecieDoPortfela", "Zestaw 10 zdjęć do portfela");
+			$oferta .= $this->showOfertaForeach("ZdjecieGrupowe", "Zdjęcie grupowe");
+			$oferta .= $this->showOfertaForeach("ZdjeciaWmagnesie", "Zdjęcie w formie magnesu");
+			$oferta .= $this->showOfertaForeach("ObrazNaPlotnie", "Obraz na półtnie");
+
+			$oferta .= '</table>';
+
+			return $oferta;
+		}
+
+		// metoda jest używana przez metodę showOferta()
+		private function showOfertaForeach($nazwaMetody, $naglowekTabeli)
+		{
+			$offer = new Offer();
+			$index = 0;
+			$oferta = "";
+
+			// użyta jest tu nieistniejąca metoda getZdjecia(). Wywoła ona magiczną metode __call() w klasie Offer
+			foreach ($offer->getZdjecia($nazwaMetody) as $format => $cena)
+			{
+				if($index == 0){
+					//$oferta .= '<tr> <th scope="row" rowspan="'. count($offer->getZdjecia($nazwaMetody)) .'">'. $naglowekTabeli .'</th> <td><input type="checkbox">'.$format.' cm</td> <td>'.$cena.' zł</td> <td><input class="sztuki" type="text" name="szt" value="1" /> szt</td> </tr>';
+					$oferta .= '<tr> <th scope="row">'. $naglowekTabeli .' <input type="checkbox"></th> <td>'.$format.' cm</td> <td>'.$cena.' zł</td> <td><input class="sztuki" type="text" name="szt" value="1" /> szt</td> </tr>';
+				}
+				else {
+					$oferta .= '<tr> <th scope="row"><input type="checkbox"></th> <td>'.$format.' cm</td> <td>'.$cena.' zł</td> <td><input class="sztuki" type="text" name="szt" value="1" /> szt</td> </tr>';
+				}
+				$index++;
+			}
+
+			return $oferta;
+		}
 
 		public function showCart($photo, $id, $item)
 		{
@@ -106,8 +190,6 @@
 					<td><b>5.00 zł</b></td>
 				</tr>
 			';
-			//http://fczaja.blogspot.com/2011/07/php-how-to-send-post-request-with.html
-			//http://stackoverflow.com/questions/3080146/post-data-to-a-url-in-php
 		}
 
 	}
