@@ -66,6 +66,22 @@
 					}
 				});
 			}
+
+			//obsługa kliknięcia w checkboxa na formularzu zamwóienia
+			$(document).on('click', 'input', function(){
+    		//alert(this.id);
+				var id_input = "#" + this.id + "-input";
+
+				if(document.getElementById(this.id).checked){
+					$(id_input).prop('disabled', false);
+					$(id_input).val('1');
+				}
+				else{
+					$(id_input).prop('disabled', true);
+					$(id_input).val('0');
+				}
+			});
+
 		</script>
 
 		<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
