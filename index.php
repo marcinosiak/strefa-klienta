@@ -53,14 +53,33 @@
 
 	<div class="container">
 
-		<!-- skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku -->
 		<script>
-			function addToCart(path)
+			//skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku
+			function addToCart(path, rodzaj, format, cena, sztuki_id, napis_id)
 			{
+				sztuki_id = "#" + sztuki_id;
+				var ilosc = $(sztuki_id).val();
+
+				napis_id = "#" + napis_id;
+				var napis = $(napis_id).val();
+
+				// + 1 zł jeśli jest napis na zdjęciu
+				if (napis != "" && napis != " ") {
+					cena = eval(cena) + 1;
+					//console.log('Cena zwiększona = ' + cena);
+				}
+
 				$.ajax({
 					type: 'post',
 					url: 'cart-action.php?action=add',
-					data: {'path':path},
+					data: {
+						'path':			path,
+						'rodzaj':		rodzaj,
+						'format':		format,
+						'cena':			cena,
+						'ilosc':		ilosc,
+						'tekst':		napis
+					},
 					success: function(sucdata){
 						$(".counter").html(sucdata);
 					}
@@ -68,19 +87,27 @@
 			}
 
 			//obsługa kliknięcia w checkboxa na formularzu zamwóienia
-			$(document).on('click', 'input', function(){
+			$(document).on('click', 'input[type="checkbox"]', function(){
     		//alert(this.id);
-				var id_input = "#" + this.id + "-input";
+				var id_sztuki = "#" + this.id + "-sztuki";
+				var id_przycisk = "#" + this.id + "-btn";
 
 				if(document.getElementById(this.id).checked){
-					$(id_input).prop('disabled', false);
-					$(id_input).val('1');
+					$(id_sztuki).prop('disabled', false);
+					$(id_sztuki).val('1');
+					$(id_przycisk).prop('disabled', false);
 				}
 				else{
-					$(id_input).prop('disabled', true);
-					$(id_input).val('0');
+					$(id_sztuki).prop('disabled', true);
+					$(id_sztuki).val('0');
+					$(id_przycisk).prop('disabled', true);
 				}
 			});
+
+			//obsługa klawisza w polu z napisem dla zdjęcia
+			//$(document).on('keyup', 'input.napis', function(){
+    		//alert(this.id);
+			//});
 
 		</script>
 
@@ -104,7 +131,7 @@
 			{
 				echo "<h1> {$row->title} </h1>";
 
-				//czy strona bez hasła
+				//strona bez hasła
 				if ($row->pass == "")
 				{
 					//------------- zdublowany blok kodu -------------------------------

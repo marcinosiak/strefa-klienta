@@ -1,10 +1,10 @@
 <?php
-	
+
 	class Cart{
 
 		private $cartId;
-		private $item;
-		private $format;
+		//private $item;
+		//private $format;
 
 
 		public function setCartId()

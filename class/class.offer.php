@@ -9,6 +9,7 @@
     private $zdjecieGrupowe = array('15x21' => 8, '20x30' => 10);
     private $zdjeciaWmagnesie = array('5x7.5' => 6, '6x9' => 7, '10x15' => 11, '15x21' => 16);
     private $obrazNaPlotnie = array('30x40' => 40, '40x60' => 55, '50x70' => 65, '60x90' => 85);
+    private $plakat = array('40x60' => 17, '50x70' => 23, '60x84' => 30);
 
     public function __call($name, $params)
 		{
@@ -32,6 +33,9 @@
       }
       elseif ($params[0] == "ObrazNaPlotnie") {
         return $this->getObrazNaPlotnie();
+      }
+      elseif ($params[0] == "Plakat") {
+        return $this->getPlakat();
       }
       else {
         //error_log("Nie ma takiej metody ('. $name .') w klasie Offer");
@@ -73,6 +77,11 @@
     public function getObrazNaPlotnie()
     {
       return $this->obrazNaPlotnie;
+    }
+
+    public function getPlakat()
+    {
+      return $this->plakat;
     }
   }
 

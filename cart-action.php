@@ -27,10 +27,17 @@
 		$cart_id = $mysqli->real_escape_string($_SESSION['cart_id']);
 		$photo = trim($mysqli->real_escape_string($_POST['path']));
 
+
 		if($_GET['action'] == "add")
 		{
+			$rodzaj = trim($mysqli->real_escape_string($_POST['rodzaj']));
+			$format = trim($mysqli->real_escape_string($_POST['format']));
+			$cena = trim($mysqli->real_escape_string($_POST['cena']));
+			$ilosc = trim($mysqli->real_escape_string($_POST['ilosc']));
+			$tekst = trim($mysqli->real_escape_string($_POST['tekst']));
+
 			//dodaję do bazy
-			if ($db->queryDb("INSERT INTO cart (cart_id, photo, status) VALUES ('{$cart_id}', '{$photo}', '1')"))
+			if ($db->queryDb("INSERT INTO cart (cart_id, photo, rodzaj, format, cena, ilosc, tekst, status) VALUES ('{$cart_id}', '{$photo}', '{$rodzaj}', '{$format}', '{$cena}', '{$ilosc}', '{$tekst}', '1')"))
 			{
 				//sprawdzam aktualną ilość pozycji w koszyku
 				$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");

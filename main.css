@@ -69,7 +69,19 @@ button.rm-form-cart:hover > span
 
 input.sztuki
 {
-	width: 4em;
+	width: 3em;
+}
+
+.napis
+{
+	margin-top: 0.6em;
+	font-size: 0.9em;
+}
+
+input.napis
+{
+	width: 8em;
+	border: 1px solid #d7d2d2;
 }
 
 input[type="checkbox"] {

@@ -79,11 +79,10 @@
 									<h4 class="modal-title">' . substr($file, 0, -4) . '</h4>
 								</div>
 								<div class="modal-body">
-								'. $this->showOferta($file) .'
+								'. $this->showOferta($path, $file) .'
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-default" data-dismiss="modal">Wróć do galerii</button>
-									<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addToCart(\' ' . $path . $file . ' \')">Dodaj do koszyka</button>
 								</div>
 							</div> <!-- /.modal-content -->
 						</div><!-- /.modal-dialog -->
@@ -93,18 +92,21 @@
 			';
 		}
 
-		private function showOferta($file)
+		private function showOferta($path, $file)
 		{
-			$oferta = '<table class="table table-striped">';
-			$oferta .= '<tr> <th></th> <th>Format</th> <th>Cena</th> <th>Ilość</th> </tr>';
+			$id_table = basename($file, ".jpg");
 
-			$oferta .= $this->showOfertaForeach("ZdjeciaPortretowe", "Zdjęcie portretowe", $file);
-			$oferta .= $this->showOfertaForeach("KartkaSwiateczna", "Kartka świąteczna", $file);
-			$oferta .= $this->showOfertaForeach("ZestawKartek", "Zestaw 6 kartek świątecznych", $file);
-			$oferta .= $this->showOfertaForeach("ZdjecieDoPortfela", "Zestaw 10 zdjęć do portfela", $file);
-			$oferta .= $this->showOfertaForeach("ZdjecieGrupowe", "Zdjęcie grupowe", $file);
-			$oferta .= $this->showOfertaForeach("ZdjeciaWmagnesie", "Zdjęcie w formie magnesu", $file);
-			$oferta .= $this->showOfertaForeach("ObrazNaPlotnie", "Obraz na półtnie", $file);
+			$oferta = '<table id="'.$id_table.'" class="table table-striped">';
+			$oferta .= '<tr> <th>&nbsp;</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Tekst na zdjęciu</th> <th>&nbsp;</th></tr>';
+
+			$oferta .= $this->showOfertaForeach("ZdjeciaPortretowe", "Zdjęcie portretowe", $path, $file);
+			$oferta .= $this->showOfertaForeach("KartkaSwiateczna", "Kartka świąteczna", $path, $file);
+			$oferta .= $this->showOfertaForeach("ZestawKartek", "Zestaw 6 kartek świątecznych", $path, $file);
+			$oferta .= $this->showOfertaForeach("ZdjecieDoPortfela", "Zestaw 10 zdjęć do portfela", $path, $file);
+			$oferta .= $this->showOfertaForeach("ZdjecieGrupowe", "Zdjęcie grupowe", $path, $file);
+			$oferta .= $this->showOfertaForeach("ZdjeciaWmagnesie", "Zdjęcie w formie magnesu", $path, $file);
+			$oferta .= $this->showOfertaForeach("ObrazNaPlotnie", "Obraz na półtnie", $path, $file);
+			$oferta .= $this->showOfertaForeach("Plakat", "Plakat", $path, $file);
 
 			$oferta .= '</table>';
 
@@ -112,7 +114,7 @@
 		}
 
 		// metoda jest używana przez metodę showOferta()
-		private function showOfertaForeach($nazwaMetody, $naglowekTabeli, $file)
+		private function showOfertaForeach($nazwaMetody, $naglowekTabeli, $path, $file)
 		{
 			$offer = new Offer();
 			$index = 0;
@@ -123,35 +125,58 @@
 			// użyta jest tu nieistniejąca metoda getZdjecia(). Wywoła ona magiczną metode __call() w klasie Offer
 			foreach ($offer->getZdjecia($nazwaMetody) as $format => $cena)
 			{
+				//ustawiam id poszczegolnych elementów
 				$check_id = 'cb-'.$nazwaMetody.'-'.$format.'-'.$file;
-				$input_id = $check_id.'-input';
+				$check_id = str_replace(".", "", $check_id); //kasuję kropki, w nazwie id nie może być kropki (jeśli jest nie działa javascript)
+				$sztuki_id = $check_id.'-sztuki';
+				$napis_id = $check_id.'-napis';
+				$przycisk_id = $check_id.'-btn';
 
 				if($index == 0){
-					$oferta .= '<tr> <th scope="row">'. $naglowekTabeli .' <input id="'.$check_id.'" type="checkbox"></th> <td>'.$format.' cm</td> <td>'.$cena.' zł</td> <td><input id="'.$input_id.'" disabled="disabled" class="sztuki" type="text" name="szt" value="0" /> szt</td> </tr>';
+					$oferta .= '<tr>
+												<td scope="row">'. $naglowekTabeli .' <input type="checkbox" id="'.$check_id.'"></td>';
 				}
-				else {
-					$oferta .= '<tr> <th scope="row"><input id="'.$check_id.'" type="checkbox"></th> <td>'.$format.' cm</td> <td>'.$cena.' zł</td> <td><input id="'.$input_id.'" disabled="disabled" class="sztuki" type="text" name="szt" value="0" /> szt</td> </tr>';
+				elseif($index > 0) {
+					$oferta .= '<tr>
+												<td scope="row"><input type="checkbox" id="'.$check_id.'"></td>';
 				}
+
+				$oferta .= '	<td>'.$format.' cm</td> <td>'.$cena.' zł</td>
+											<td><input id="'.$sztuki_id.'" disabled="disabled" class="sztuki" type="text" name="szt" value="0" /> szt</td>
+											<td><input id="'.$napis_id.'" class="napis" type="text" placeholder="Napis + 1zł" name="napis" /></td>
+											<td><button type="button" class="btn btn-primary btn-xs" id="'.$przycisk_id.'" disabled="disabled" onclick="addToCart(\''. $path . $file . '.jpg\', \''.$naglowekTabeli.'\', \''.$format.'\', \''.$cena.'\', \''.$sztuki_id.'\', \''.$napis_id.'\')">Kupuję</button></td>
+										</tr>';
 				$index++;
 			}
 
 			return $oferta;
 		}
 
-		public function showCart($photo, $id, $item)
+		public function showCart($photo, $id, $item, $rodzaj, $format, $cena, $ilosc, $napis)
 		{
-			//<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\')"> <span>&times;</span> Usuń z koszyka</button></div> </td>
-			//<td>' . $photo . '<div><a type="submit" class="btn btn-xs rm-form-cart" href="cart-show.php?action=del&id='. $id .'&photo='. $photo .'"> <span>&times;</span> Usuń z koszyka</a></div> </td>
-			return '
+			$photo_name = basename($photo, ".jpg");
+
+			$row = '
 				<tr id="item-'.$item.'">
 					<td><div><img src="' . $photo . '" class="img-responsive"></div></td>
-					<td>' . $photo . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\', \'' . $id . '\')"> <span>&times;</span> Usuń z koszyka</button></div> </td>
-					<td>10x15</td>
-					<td>2.50 zł</td>
-					<td>2 szt.</td>
-					<td><b>5.00 zł</b></td>
+					<td>' . $photo_name . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\', \'' . $id . '\')"> <span>&times;</span> Usuń z koszyka</button></div>
+			';
+
+			if($napis != ""){
+				$row .= '<div class="napis text-primary">Z napisem: ' . $napis . '</div>';
+			}
+
+			$row .= '
+					</td>
+					<td>' . $rodzaj . '</td>
+					<td>' . $format . '</td>
+					<td>' . $cena . ' zł</td>
+					<td>' . $ilosc . ' szt.</td>
+					<td><b id="item-cena-'.$item.'">' . number_format($ilosc * $cena, 2, ',', ' ') . ' zł</b></td>
 				</tr>
 			';
+
+			return $row;
 		}
 
 	}
