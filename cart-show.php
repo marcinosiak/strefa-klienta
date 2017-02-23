@@ -13,9 +13,7 @@
 
 	//łączę z bazą danych
 	$db = new Db();
-	$db->connectDb();
-	$mysqli = $db->getMysqli();
-
+	
 	$view = new View();
 ?>
 

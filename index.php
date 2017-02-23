@@ -24,7 +24,7 @@
 
 	//łączę z bazą danych
 	$db = new Db();
-	$db->connectDb();
+	//$db->connectDb();
 
 	//pobieram adres strony do wyświetlenia
 	$adres = new Adres();
@@ -52,7 +52,7 @@
 <body>
 
 	<div class="container">
-
+		
 		<script>
 			//skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku
 			function addToCart(path, rodzaj, format, cena, sztuki_id, napis_id)

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 	header('Content-type: text/html; charset=utf-8');
 
@@ -15,15 +15,13 @@
 		$post->setFolder(trim($_POST['folder']));
 
 		$db = new Db();
-		$db->connectDb();
-		$mysqli = $db->getMysqli();
 
 		$adres = new Adres();
 
-		$title = $mysqli->real_escape_string($post->getTitle());
-		$content = $mysqli->real_escape_string($post->getContent());
+		$title = $db->escape_value($post->getTitle());
+		$content = $db->escape_value($post->getContent());
 		echo $url_text = $adres->getKatalog() . $post->plCharset($post->getTitle());
-		$folder = $mysqli->real_escape_string($post->getFolder());
+		$folder = $db->escape_value($post->getFolder());
 
 		//Sprawdzam ostatnie id_strony w bazie
 		if ($result = $db->queryDb("SELECT id_strony FROM strony ORDER BY id_strony DESC LIMIT 1"))
@@ -63,7 +61,7 @@
 <body>
 	<div class="container">
 		<h1>Nowy post</h1>
-		
+
 		<form action="" method="post">
 			<div class="form-group">
 				<input class="form-control" type="text" name="title" placeholder="Wprowadź tytuł">

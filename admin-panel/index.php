@@ -1,5 +1,6 @@
 <?php
-
+	error_reporting(E_ALL - E_WARNING);
+	
 	require_once('../class/class.db.php');
 	require_once('../class/class.post.php');
 	require_once('../class/class.adres.php');
@@ -7,7 +8,7 @@
 	$adres = new Adres();
 
 	$db = new Db();
-	$db->connectDb();
+	//$db->connectDb();
 
 	$result = $db->queryDb("SELECT id_strony, url_text, title, date FROM strony");
 ?>
@@ -25,18 +26,18 @@
 <body>
 	<div class="container">
 		<h1>Admin panel</h1>
-		
+
 		<a class="btn btn-default" href="post-new" role="button">Nowy post</a>
-		
+
 		<h2>Lista wszystkich postów</h2>
 
 		<table class="table">
-			
+
 			<tr>
 				<th>ID strony</th> <th>Tytuł strony</th> <th>Data publikacji</th>
 			</tr>
 
-			<?php 
+			<?php
 				if($result)
 				{
 					while($row = $result->fetch_object())
@@ -57,4 +58,4 @@
 		</table>
 	</div>
 </body>
-</html>	
+</html>

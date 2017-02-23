@@ -10,13 +10,11 @@
 	$adres = new Adres();
 
 	$db = new DB();
-	$db->connectDb();
-	$mysqli = $db->getMysqli();
 
 	//wczytywanie posta do edycji
 	if (isset($_GET['post']))
 	{
-		$post_id = $mysqli->real_escape_string($_GET['post']);
+		$post_id = $db->escape_value($_GET['post']);
 
 		$result = $db->queryDb("SELECT url_text, title, content, folder FROM strony WHERE id_strony='$post_id'");
 
@@ -44,11 +42,11 @@
 		$post->setPostId($_POST['post_id']);
 		$post->setFolder($_POST['folder']);
 
-		$post_id = $mysqli->real_escape_string($post->getPostId());
-		$title = $mysqli->real_escape_string(trim($post->getTitle()));
-		$content = $mysqli->real_escape_string(trim($post->getContent()));
-		$url_text = $mysqli->real_escape_string($adres->getKatalog() . $post->plCharset($post->getUrlText()));
-		$folder = $mysqli->real_escape_string(trim($post->getFolder()));
+		$post_id = $db->escape_value($post->getPostId());
+		$title = $db->escape_value(trim($post->getTitle()));
+		$content = $db->escape_value(trim($post->getContent()));
+		$url_text = $db->escape_value($adres->getKatalog() . $post->plCharset($post->getUrlText()));
+		$folder = $db->escape_value(trim($post->getFolder()));
 
 		if ($db->queryDb("UPDATE strony SET url_text='$url_text', title='$title', content='$content', folder='$folder' WHERE id_strony='$post_id'"))
 		{
