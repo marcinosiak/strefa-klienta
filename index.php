@@ -13,7 +13,9 @@
 	ini_set('session.cookie_lifetime',0);
 
 	/* rozpocznij sesję */
-	session_start();
+	require_once('class/class.session.php');
+	$session = new Session();
+	//session_start();
 
 	var_dump($_SESSION);
 
@@ -21,10 +23,10 @@
 	require_once('class/class.db.php');
 	require_once('class/class.folder.php');
 	require_once('class/class.view.php');
+	require_once('class/class.user.php');
 
 	//łączę z bazą danych
 	$db = new Db();
-	//$db->connectDb();
 
 	//pobieram adres strony do wyświetlenia
 	$adres = new Adres();
@@ -42,6 +44,11 @@
 	}
 
 	$view = new View();
+
+	$user = User::find_by_id(1);
+	echo $user->name;
+
+	var_dump($user);
 ?>
 
 <!DOCTYPE html>
@@ -50,9 +57,11 @@
 <?php echo $view->showHeader(); ?>
 
 <body>
+	<!-- Live Reload Script -->
+	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 	<div class="container">
-		
+
 		<script>
 			//skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku
 			function addToCart(path, rodzaj, format, cena, sztuki_id, napis_id)
