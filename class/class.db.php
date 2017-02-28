@@ -1,4 +1,5 @@
 <?php
+	$db = new Db();
 
 	class Db {
 

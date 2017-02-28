@@ -1,5 +1,6 @@
 <?php
-
+  $offer = new Offer();
+  
   class Offer {
 
     private $zdjeciaPortretowe = array('10x15' => 6, '13x18' => 7, '15x21' => 8, '20x30' => 11);

@@ -11,16 +11,12 @@
 	require_once('class/class.db.php');
 	require_once('class/class.view.php');
 
-	//łączę z bazą danych
-	$db = new Db();
-	
-	$view = new View();
 ?>
 
 	<!DOCTYPE html>
 	<html lang="pl">
 
-	<?php echo $view->showHeader(); ?>
+	<?php echo $view->showHeader("Koszyk"); ?>
 
 	<body>
 

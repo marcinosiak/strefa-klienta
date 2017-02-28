@@ -1,5 +1,5 @@
-<?php 
-
+<?php
+	
 	class Folder{
 
 		private $path = "photo/";
@@ -40,7 +40,7 @@
 		{
 			return $this->files;
 		}
-		
+
 
 		public function __destruct()
 		{

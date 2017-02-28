@@ -14,9 +14,6 @@
 
 	/* rozpocznij sesję */
 	require_once('class/class.session.php');
-	$session = new Session();
-	//session_start();
-
 	var_dump($_SESSION);
 
 	require_once('class/class.adres.php');
@@ -25,11 +22,7 @@
 	require_once('class/class.view.php');
 	require_once('class/class.user.php');
 
-	//łączę z bazą danych
-	$db = new Db();
-
 	//pobieram adres strony do wyświetlenia
-	$adres = new Adres();
 	$strona = $adres->getStrona();
 	$katalog = $adres->getKatalog();
 	$url = $adres->getUrl();
@@ -42,19 +35,12 @@
 		//liczę ilość pozycji w koszyku dla podanego id koszyka
 		$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
 	}
-
-	$view = new View();
-
-	$user = User::find_by_id(1);
-	echo $user->name;
-
-	var_dump($user);
 ?>
 
 <!DOCTYPE html>
 <html lang="pl">
 
-<?php echo $view->showHeader(); ?>
+<?php echo $view->showHeader("Strefa klienta"); ?>
 
 <body>
 	<!-- Live Reload Script -->

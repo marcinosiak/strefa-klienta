@@ -9,8 +9,6 @@
 	require_once('class/class.db.php');
 	require_once('class/class.cart.php');
 
-	$cart = new Cart();
-
 	if(!isset($_SESSION['cart_id']))
 	{
 		$cart->setCartId();
@@ -19,8 +17,6 @@
 
 	if(isset($_GET['action']))
 	{
-		$db = new Db();
-
 		//sprawdzam zmienne
 		$cart_id = $db->escape_value($_SESSION['cart_id']);
 		$photo = trim($db->escape_value($_POST['path']));

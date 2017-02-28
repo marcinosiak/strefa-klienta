@@ -1,5 +1,6 @@
 <?php
-
+  $session = new Session();
+   
   class Session
   {
 

@@ -5,12 +5,12 @@
 
   class User
   {
-    public $id;
-    public $email;
-    public $password;
-    public $name;
-    public $activate;
-    public $random;
+    private $id;
+    private $email;
+    private $password;
+    private $name;
+    private $activate;
+    private $random;
 
     /**
      * Wysyła do bazy zapytanie sql
@@ -35,6 +35,27 @@
       $result = self::find_by_sql("SELECT * FROM users WHERE id='{$id}' LIMIT 1");
       $found = $result->fetch_object();
       return $found;
+    }
+
+    /**
+     * Sprawdza czy istnieje użytkownik o podanym emailu i haśle
+     * Sprawdza też czy email i hasło są poprawnie podane w formularzu logowania
+     *
+     * @param  string $username [description]
+     * @param  string $password [description]
+     * @return object      [zwraca obiekt z polami jak nazwy kolumn w tabeli users]
+     * @return false      [jeśli dane do logowania się nie zgadzają]
+     */
+    public static function authenticate($username="", $password="")
+    {
+      global $db;
+
+      $username = $db->escape_value($username);
+      $password = $db->escape_value($password);
+
+      $result = self::find_by_sql("SELECT * FROM users WHERE email='{$username}' AND password='{$password}' LIMIT 1");
+
+      return !empty($result) ? $result->fetch_object() : false;
     }
 
   }

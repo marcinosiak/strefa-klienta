@@ -6,11 +6,6 @@
 	require_once('../class/class.post.php');
 	require_once('../class/class.adres.php');
 
-	$post = new Post();
-	$adres = new Adres();
-
-	$db = new DB();
-
 	//wczytywanie posta do edycji
 	if (isset($_GET['post']))
 	{
@@ -50,13 +45,10 @@
 
 		if ($db->queryDb("UPDATE strony SET url_text='$url_text', title='$title', content='$content', folder='$folder' WHERE id_strony='$post_id'"))
 		{
-			echo "Aktualizacja poprawna";
+			//echo "Aktualizacja poprawna";
+			header("Location: index");
 		}
 	}
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -93,7 +85,7 @@
 				<input class="btn btn-default" type="submit" value="Popraw">
 				<input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
 
-				<a class="btn btn-default" href="index">Anuluj</a>
+				<a class="btn btn-default" href="index">Zakończ</a>
 			</div>
 		</form>
 	</div>

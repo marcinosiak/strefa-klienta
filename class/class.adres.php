@@ -1,4 +1,5 @@
 <?php
+	$adres = new Adres();
 
 	class Adres {
 

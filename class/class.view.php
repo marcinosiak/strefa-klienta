@@ -1,26 +1,26 @@
 <?php
 
-	require_once('class/class.offer.php');
+	require_once('class.offer.php');
+	$view = new View();
 
 	class View
 	{
 
-		public function showHeader()
+		public function showHeader($title)
 		{
+			$title == "Admin Panel" ? $base_path = "../" : $base_path = "";
+			
 			return '
 				<head>
 					<meta charset="UTF-8">
-					<title>Strefa klienta</title>
+					<title>'.$title.'</title>
 
 					<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
 					<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha256-IF1P9CSIVOaY4nBb5jATvBGnxMn/4dB9JNTLqdxKN9w= sha512-UsfHxnPESse3RgYeaoQ7X2yXYSY5f6sB6UT48+F2GhNLqjbPhtwV2WCUQ3eQxeghkbl9PioaTOHNA+T0wNki2w==" crossorigin="anonymous">
 					<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
 
-
-					<link rel="stylesheet" href="main.css">
-
-
+					<link rel="stylesheet" href="'.$base_path.'main.css">
 				</head>
 			';
 		}
@@ -116,7 +116,7 @@
 		// metoda jest używana przez metodę showOferta()
 		private function showOfertaForeach($nazwaMetody, $naglowekTabeli, $path, $file)
 		{
-			$offer = new Offer();
+			global $offer;
 			$index = 0;
 			$oferta = "";
 			//kasuję rozszerzenie pliku, jquery nie widzi id z kropką w nazwie id

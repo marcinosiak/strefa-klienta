@@ -1,4 +1,5 @@
-<?php 
+<?php
+	$post = new Post();
 	
 	class Post {
 
@@ -65,8 +66,8 @@
 		}
 
 		public function plCharset($string) {
-			
-			
+
+
 			$polskie = array(',', ' - ',' ','ę', 'Ę', 'ó', 'Ó', 'Ą', 'ą', 'Ś', 's', 'ł', 'Ł', 'ż', 'Ż', 'Ź', 'ź', 'ć', 'Ć', 'ń', 'Ń','-',"'","/","?", '"', ":", 'ś', '!','.', '&', '&amp;', '#', ';', '[',']','domena.pl', '(', ')', '`', '%', '”', '„', '…');
 			$miedzyn = array('-', '-',  '-','e', 'e', 'o', 'o', 'a', 'a', 's', 's', 'l', 'l', 'z', 'z', 'z', 'z', 'c', 'c', 'n', 'n','-',"","","","","",'s','','', '', '', '', '', '', '', '', '', '', '', '', '');
 
@@ -74,24 +75,24 @@
 			//$miedzyn = array('e', 'o', 'a', 's', 'l', 'z', 'z', 'c', 'n', '-');
 
 			$string = str_replace($polskie, $miedzyn, $string);
-			
+
 			// usuń wszytko co jest niedozwolonym znakiem
 			$string = preg_replace('/[^0-9a-zA-Z\-]+/', '', $string);
-			
+
 			// zredukuj liczbę myślników do jednego obok siebie
 			$string = preg_replace('/[\-]+/', '-', $string);
-			
+
 			// usuwamy możliwe myślniki na początku i końcu
 			$string = trim($string, '-');
 
 			$string = stripslashes($string);
-			
+
 			//wszystko małymi
 			$string = strtolower($string);
 
 			// na wszelki wypadek
 			$string = urlencode($string);
-			
+
 			return $string;
 		}
 

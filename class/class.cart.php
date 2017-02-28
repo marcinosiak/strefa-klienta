@@ -1,5 +1,7 @@
 <?php
 
+	$cart = new Cart();
+
 	class Cart{
 
 		private $cartId;
