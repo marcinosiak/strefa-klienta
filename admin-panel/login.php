@@ -19,9 +19,22 @@
 
     $found_user = User::authenticate($username, $password);
 
-    if($found_user){
-      $session->login($found_user);
-      header("Location: index");
+    if($found_user)
+    {
+      if ($found_user->activate == "1")
+      {
+        if ($found_user->user_status == "admin")
+        {
+          $session->login($found_user);
+          header("Location: index");
+        }
+        else {
+          $message = "Tylko dla administratora. Nie masz wystarczających uprawnień";
+        }
+      }
+      else {
+        $message = "Użytkownik jest jeszcze nieaktywny";
+      }
     }
     else{
       $message = "Niepoprawny użytkownik lub hasło";
