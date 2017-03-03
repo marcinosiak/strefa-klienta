@@ -1,15 +1,21 @@
 <?php
   $session = new Session();
-   
+
   class Session
   {
-
     private $logged_in = false;
     public $user_id;
+
+    /**
+     * pole określające dostęp do strony zabezpieczonej hasłem
+     * @var boolean
+     */
+    private $access = false;
 
     public function __construct(){
       session_start();
       $this->check_login();
+      $this->check_access();
     }
 
     public function is_logged_in(){
@@ -37,6 +43,18 @@
       } else {
         unset($this->user_id);
         $this->logged_in = false;
+      }
+    }
+
+    private function check_access(){
+      if(isset($_SESSION['access'])){
+        $this->access = $_SESSION['access'];
+        //$_SESSION['access-info'] = "check_access isset";
+      }
+      else{
+        $this->access = false;
+        unset($this->access);
+        //$_SESSION['access-info'] = "check_access unset";
       }
     }
 

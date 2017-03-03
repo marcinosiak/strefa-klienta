@@ -24,7 +24,7 @@
 
 	//pobieram adres strony do wyświetlenia
 	$strona = $adres->getStrona();
-	$katalog = $adres->getKatalog();
+	//$katalog = $adres->getKatalog();
 	$url = $adres->getUrl();
 
 	//szukam w bazie strony do wyświetlenia
@@ -126,11 +126,71 @@
 			{
 				echo "<h1> {$row->title} </h1>";
 
-				//strona bez hasła
-				if ($row->pass == "")
-				{
-					//------------- zdublowany blok kodu -------------------------------
+				var_dump($row->pass);
 
+				if(isset($_SESSION['pass_site'])){
+					var_dump($_SESSION['pass_site']);
+				} else {
+					var_dump("_SESSION['pass_site'] jest puste");
+				}
+
+				//Sterowanie dostępęm do wyświetlenia strony
+				//Jeśli strona jest zabezpieczona hasłem
+				if(strlen($row->pass) > 0)
+				{
+					//czy do tej strony było już podane wcześniej hasło
+					//np. wracam do strony z koszyka, więc wcześniej już podałem hasło
+					if(isset($_SESSION['pass_site']))
+					{
+						$pass_site = $_SESSION['pass_site'];
+					}	else {
+						$pass_site = null;
+					}
+
+					//jeśli wcześniej było już podane hasło to sprawdzam
+					//czy to hasło jest faktycznie do tej strony
+					//ten warunek zabezpiecza przed dostępem do innych stron z hasłem
+					if($_SESSION['access'] == true && $pass_site == $row->pass)
+					{
+						$_SESSION['access'] = true;
+						$_SESSION['access-info'] = "t0";
+					}
+					//jeśli zostało wpisane hasło w formularzu
+					elseif (isset($_POST["password"]))
+					{
+						//to przefiltruj je
+						$pass_site = htmlentities($_POST["password"], ENT_QUOTES, "UTF-8");
+
+						//i jeśli hasło zgadza się z hasłem odczytanym z bazy, udziel dostępu
+						if ($pass_site == $row->pass)
+						{
+							$_SESSION['access'] = true;
+							$_SESSION['access-info'] = "t1";
+							//i zapamiętaj podane hasło
+							$_SESSION['pass_site'] = $row->pass;
+						} else {
+							$_SESSION['access'] = false;
+							$_SESSION['access-info'] = "f1";
+							echo $view->alertInfo('Błędne hasło. Wprowadź ponownie hasło');
+							echo $view->passForm();
+						}
+					} else {
+						//pierwsze wyświetlenie strony, czyli wcześniej nie było podane hasło
+						$_SESSION['access'] = false;
+						$_SESSION['access-info'] = "f2";
+						//wyświetl formularz do wpisania hasła dostępu do strony
+						echo $view->passForm();
+					}
+				}
+				//jeśli strona nie jest zabezpieczona hasłem udziel dostępu
+				else {
+					$_SESSION['access'] = true;
+					$_SESSION['access-info'] = "t2";
+				}
+
+				//wyświetlanie strony uzależnione od wcześnie przydzielinego dostępu
+				if($_SESSION['access'])
+				{
 					echo $row->content;
 
 					//czy jest folder ze zdjęciami?
@@ -143,74 +203,20 @@
 						{
 							//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
 							echo $view->showGallery($folder->getPath(), $file);
-							//echo $view->showGallery($folder->getPath(), $file, $oferta);
 						}
 
 						echo '</div>';
-					}
-					else
-					{
+					} else {
 						echo $view->alertInfo('Nie dołczono zdjęć lub niepoprawna nazwa katalogu ze zdjęciami');
-					}
-					//--------------------------------------------------------------------
-				}
-
-
-				//storna jest zabezpieczona hasłem
-				else
-				{
-					//czy hasło zostało wpisane w formularzu na stronie
-					if (isset($_POST["password"]))
-					{
-						$pass_site = htmlentities($_POST["password"], ENT_QUOTES, "UTF-8");
-
-						//czy hasła się zgadzaja
-						if ($pass_site == $row->pass)
-						{
-							//------------- zdublowany blok kodu -------------------------------
-							echo $row->content;
-
-							//czy jest folder ze zdjęciami?
-							if(!$row->folder == "")
-							{
-								$folder = new Folder($row->folder);
-								echo '<div class="row gallery">';
-
-								foreach ($folder->getFiles() as $file)
-								{
-									//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
-									echo $view->showGallery($folder->getPath(), $file);
-								}
-
-								echo '</div>';
-							}
-							else
-							{
-								echo $view->alertInfo('Nie dołczono zdjęć lub niepoprawna nazwa katalogu ze zdjęciami');
-							}
-							//--------------------------------------------------------------------
-						}
-						//niepoprawne hasło
-						else
-						{
-							echo $view->alertInfo('Błędne hasło. Wprowadź ponownie hasło');
-							echo $view->passForm();
-						}
-					}
-					//jeśli jasło nie zostało podane w formularzu, wyświetl formularz
-					else
-					{
-						echo $view->passForm();
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			//header("HTTP/1.0 404 Not Found");
 			echo $view->alertInfo('404 Nie znalazłem takiej strony');
 		}
 
+		var_dump($_SESSION);
 		?>
 
 	</div>
