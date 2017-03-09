@@ -18,15 +18,13 @@
 			$this->url = $this->host . $this->strona;
 		}
 
-
 		/**
 		 * @return $url
 		 */
-		public function getUrl()
+		public function get_url()
 		{
 		    return $this->url;
 		}
-
 
 		/**
 		 * @param type $url
@@ -42,7 +40,7 @@
 		 * zwraca nazwę hosta w postaci np. http://annaosiak.pl
 		 * @return $host
 		 */
-		public function getHost()
+		public function get_host()
 		{
 			return "http://" . $this->host;
 		}
@@ -52,7 +50,7 @@
 		 * zwraca nazwę hosta w postaci np. http://annaosiak.pl/przykladowa-strona-do-wyswietlenia
 		 * @return $strona
 		 */
-		public function getStrona()
+		public function get_strona()
 		{
 			return $this->strona;
 		}
@@ -60,7 +58,7 @@
 		/**
 		 * @return $katalog
 		 */
-		public function getKatalog()
+		public function get_katalog()
 		{
 			return $this->katalog;
 		}
@@ -70,7 +68,7 @@
 		 * adres hosta i katalog
 		 * @return $host-katalog
 		 */
-		public function getHostKatalog()
+		public function get_host_katalog()
 		{
 			return "http://" . $this->host . $this->katalog;
 		}

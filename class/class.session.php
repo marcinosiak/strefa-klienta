@@ -1,4 +1,6 @@
 <?php
+  //http://lukasz-socha.pl/php/obiektowy-mechanizm-sesji/
+
   $session = new Session();
 
   class Session
@@ -53,9 +55,17 @@
       }
       else{
         $this->access = false;
-        unset($this->access);
-        //$_SESSION['access-info'] = "check_access unset";
       }
+    }
+
+    public function get_access()
+    {
+      return $this->access;
+    }
+
+    public function set_access($access)
+    {
+      $this->access = $access;
     }
 
   }

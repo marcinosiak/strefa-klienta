@@ -7,6 +7,7 @@
   require_once('../class/class.view.php');
   require_once('../class/class.session.php');
 
+  //jeśli admin jest zalogowany, przejdż do panelu
   if($session->is_logged_in())
   {
     header("Location: index");
@@ -50,7 +51,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 
-<?php echo $view->showHeader("Logowanie"); ?>
+<?php echo $view->showHeader("Logowanie", ""); ?>
 
 <body>
 	<!-- Live Reload Script -->

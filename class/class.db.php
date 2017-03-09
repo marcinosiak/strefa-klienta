@@ -31,7 +31,7 @@
 			}
 		}
 
-		public function getMysqli() {
+		public function get_mysqli() {
 			return $this->mysqli;
 		}
 

@@ -23,9 +23,9 @@
 	require_once('class/class.user.php');
 
 	//pobieram adres strony do wyświetlenia
-	$strona = $adres->getStrona();
+	$strona = $adres->get_strona();
 	//$katalog = $adres->getKatalog();
-	$url = $adres->getUrl();
+	$url = $adres->get_url();
 
 	//szukam w bazie strony do wyświetlenia
 	$result = $db->queryDb("SELECT url_text, title, content, folder, pass FROM strony WHERE url_text='$strona' OR url='$strona'");
@@ -40,7 +40,7 @@
 <!DOCTYPE html>
 <html lang="pl">
 
-<?php echo $view->showHeader("Strefa klienta"); ?>
+<?php echo $view->showHeader("Strefa klienta", null); ?>
 
 <body>
 	<!-- Live Reload Script -->
@@ -126,13 +126,13 @@
 			{
 				echo "<h1> {$row->title} </h1>";
 
-				var_dump($row->pass);
+				//var_dump($row->pass);
 
-				if(isset($_SESSION['pass_site'])){
-					var_dump($_SESSION['pass_site']);
-				} else {
-					var_dump("_SESSION['pass_site'] jest puste");
-				}
+				// if(isset($_SESSION['pass_site'])){
+				// 	var_dump($_SESSION['pass_site']);
+				// } else {
+				// 	var_dump("_SESSION['pass_site'] jest puste");
+				// }
 
 				//Sterowanie dostępęm do wyświetlenia strony
 				//Jeśli strona jest zabezpieczona hasłem
@@ -147,13 +147,16 @@
 						$pass_site = null;
 					}
 
+					//
+					$_SESSION['access'] = $session->get_access();
+
 					//jeśli wcześniej było już podane hasło to sprawdzam
 					//czy to hasło jest faktycznie do tej strony
 					//ten warunek zabezpiecza przed dostępem do innych stron z hasłem
 					if($_SESSION['access'] == true && $pass_site == $row->pass)
 					{
 						$_SESSION['access'] = true;
-						$_SESSION['access-info'] = "t0";
+						//$_SESSION['access-info'] = "t0";
 					}
 					//jeśli zostało wpisane hasło w formularzu
 					elseif (isset($_POST["password"]))
@@ -165,19 +168,19 @@
 						if ($pass_site == $row->pass)
 						{
 							$_SESSION['access'] = true;
-							$_SESSION['access-info'] = "t1";
+							//$_SESSION['access-info'] = "t1";
 							//i zapamiętaj podane hasło
 							$_SESSION['pass_site'] = $row->pass;
 						} else {
 							$_SESSION['access'] = false;
-							$_SESSION['access-info'] = "f1";
+							//$_SESSION['access-info'] = "f1";
 							echo $view->alertInfo('Błędne hasło. Wprowadź ponownie hasło');
 							echo $view->passForm();
 						}
 					} else {
 						//pierwsze wyświetlenie strony, czyli wcześniej nie było podane hasło
 						$_SESSION['access'] = false;
-						$_SESSION['access-info'] = "f2";
+						//$_SESSION['access-info'] = "f2";
 						//wyświetl formularz do wpisania hasła dostępu do strony
 						echo $view->passForm();
 					}
@@ -185,7 +188,7 @@
 				//jeśli strona nie jest zabezpieczona hasłem udziel dostępu
 				else {
 					$_SESSION['access'] = true;
-					$_SESSION['access-info'] = "t2";
+					//$_SESSION['access-info'] = "t2";
 				}
 
 				//wyświetlanie strony uzależnione od wcześnie przydzielinego dostępu
@@ -216,7 +219,6 @@
 			echo $view->alertInfo('404 Nie znalazłem takiej strony');
 		}
 
-		var_dump($_SESSION);
 		?>
 
 	</div>

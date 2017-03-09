@@ -4,21 +4,24 @@
 	//przy każdym włączeniu przeglądarki sesja jest kończona
 	ini_set('session.cookie_lifetime',0);
 
-	session_start();
-
+	/* rozpocznij sesję */
+	require_once('class/class.session.php');
 	var_dump($_SESSION);
 
 	require_once('class/class.db.php');
 	require_once('class/class.view.php');
+	require_once('class/class.adres.php');
 
 ?>
 
 	<!DOCTYPE html>
 	<html lang="pl">
 
-	<?php echo $view->showHeader("Koszyk"); ?>
+	<?php echo $view->showHeader("Koszyk", null); ?>
 
 	<body>
+		<!-- Live Reload Script -->
+		<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 		<div class="container">
 
@@ -120,10 +123,16 @@
 					echo "<a class='btn btn-default' href='http://annaosiak.pl/oferta' role='button'>Zobacz ofertę</a>";
 				}
 
+				//jeśli jest coś w koszyku wyświetl przycisk "Realizuj zamowienie"
+				if (isset($count))
+				{
+					echo "<a class='btn btn-primary pull-right' href='" . $adres->get_katalog() . "order' role='button'>Realizuj zamówienie</a>";
+				}
+
 				//echo "<input class='btn btn-default' type='button' value='Wróć do galerii' onClick='history.back();' />";
 
 			?>
-
+			<br><br><br>
 		</div>
 	</body>
 	</html>

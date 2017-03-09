@@ -6,10 +6,10 @@
 	class View
 	{
 
-		public function showHeader($title)
+		public function showHeader($title, $file_name)
 		{
 			$title == "Admin Panel" ? $base_path = "../" : $base_path = "";
-			
+
 			return '
 				<head>
 					<meta charset="UTF-8">
@@ -19,12 +19,29 @@
 
 					<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha256-IF1P9CSIVOaY4nBb5jATvBGnxMn/4dB9JNTLqdxKN9w= sha512-UsfHxnPESse3RgYeaoQ7X2yXYSY5f6sB6UT48+F2GhNLqjbPhtwV2WCUQ3eQxeghkbl9PioaTOHNA+T0wNki2w==" crossorigin="anonymous">
 					<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
-
+					'.$this->inc_css_file($file_name, $base_path).'
 					<link rel="stylesheet" href="'.$base_path.'main.css">
 				</head>
 			';
 		}
 
+		/**
+		 * Metoda dołącza pliki css w nagłwku wczytywanej strony
+		 * @param  string $file_name nazwa pliku/strony do ktrej dołączam css
+		 * @param  string $base_path odwołanie do ścieżki względnej wczytywanych plików w stosunku do bieżącego katalogu
+		 * @return string $css_inc
+		 */
+		private function inc_css_file($file_name, $base_path)
+		{
+			$css_inc = "";
+
+			if($file_name == "login.php" || $file_name == "register.php")
+			{
+					$css_inc = '<link rel="stylesheet" href="'.$base_path.'css/login-form.css">';
+			}
+
+			return $css_inc;
+		}
 
 		public function alertInfo($info)
 		{
@@ -169,7 +186,7 @@
 			$row .= '
 					</td>
 					<td>' . $rodzaj . '</td>
-					<td>' . $format . '</td>
+					<td>' . $format . ' cm</td>
 					<td>' . $cena . ' zł</td>
 					<td>' . $ilosc . ' szt.</td>
 					<td><b id="item-cena-'.$item.'">' . number_format($ilosc * $cena, 2, ',', ' ') . ' zł</b></td>

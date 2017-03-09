@@ -46,8 +46,8 @@
 					{
 						echo "<tr>";
 							echo "<td> {$row->id_strony} </td>
-								  <td> <a href='{$adres->getHost()}{$row->url_text}'><strong>{$row->title}</strong></a>
-								  	   <div><a href='{$adres->getHostKatalog()}admin-panel/post-edit?post={$row->id_strony}'>edytuj</a> <span>|</span> <a>usuń</a></div>
+								  <td> <a href='{$adres->get_host()}{$row->url_text}'><strong>{$row->title}</strong></a>
+								  	   <div><a href='{$adres->get_host_katalog()}admin-panel/post-edit?post={$row->id_strony}'>edytuj</a> <span>|</span> <a>usuń</a></div>
 								  </td>
 								  <td> {$row->date} </td>";
 						echo "</tr>";
