@@ -107,6 +107,7 @@
 		</script>
 
 		<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
+		<a href="login" class="fright">Logowanie</a>
 
 		<?php
 

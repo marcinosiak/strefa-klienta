@@ -30,6 +30,10 @@
 		<div class="container">
       <a class="fright" href="logout">Wyloguj</a>
 
+			<h1>Twoje zamówienie</h1>
+
+			<a href="cart-show" class="btn btn-primary">Wróć do koszyka</a>
+
     </div>
 	</body>
 	</html>

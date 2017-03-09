@@ -20,8 +20,10 @@
     $password = trim($_POST['password']);
     $repeat_password = trim($_POST['repeat_password']);
     $phone = trim($_POST['phone']);
+    $kid = trim($_POST['kid']);
+    $institution = trim($_POST['institution']);
 
-    $message = User::register($name, $email, $password, $repeat_password, $phone);
+    $message = User::register($name, $email, $password, $repeat_password, $phone, $kid, $institution);
     $_POST = array();
 
   }
@@ -43,24 +45,8 @@
 
 	<div class="container">
 		<h1>Rejestracja nowego Klienta</h1>
-    <br>
 
     <?php if(isset($message)){ echo $view->alertInfo($message); } ?>
-<!--
-    <form action="login.php" method="post">
-      <div class="form-group">
-        <label for="email">Adres email</label>
-        <input type="email" class="form-control" name="email" placeholder="Wpis swój adres email" value="<?php //echo htmlentities($username); ?>">
-      </div>
-      <div class="form-group">
-        <label for="password">Hasło</label>
-        <input type="password" class="form-control" name="password" placeholder="Wprowadź hasło" value="<?php //echo htmlentities($password); ?>">
-      </div>
-      <button type="submit" name="submit" class="btn btn-default">Zaloguj</button>
-    </form>
- -->
-
-
 
     <div class="row" id="pwd-container">
       <div class="col-md-4"></div>
@@ -74,6 +60,8 @@
             <input type="password" class="form-control input-lg" name="password" placeholder="Hasło" required value="<?php if(isset($password)) { echo $password; } ?>" />
             <input type="password" class="form-control input-lg" name="repeat_password" placeholder="Powtórz hasło" required value="<?php if(isset($repeat_password)) { echo $repeat_password; } ?>" />
             <input type="tel" name="phone" placeholder="Twój telefon" required class="form-control input-lg" value="<?php if(isset($phone)) { echo $phone; } ?>" />
+            <input type="text" name="kid" placeholder="Imię i nazwisko dziecka" required class="form-control input-lg" value="<?php if(isset($kid)) { echo $kid; } ?>" />
+            <input type="text" name="institution" placeholder="Nazwa przedszkola lub szkoły" required class="form-control input-lg" value="<?php if(isset($institution)) { echo $institution; } ?>" />
 
             <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block">Rejestruj</button>
           </form>

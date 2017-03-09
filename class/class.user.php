@@ -74,7 +74,7 @@
     //   $phone = $db->escape_value($this->user_phone);
     // }
 
-    public static function register($name="", $email="", $password="", $repeat_password="", $phone="")
+    public static function register($name="", $email="", $password="", $repeat_password="", $phone="", $kid="", $institution="")
     {
       global $db;
 
@@ -83,6 +83,8 @@
       $password = $db->escape_value($password);
       $repeat_password = $db->escape_value($repeat_password);
       $phone = $db->escape_value($phone);
+      $kid = $db->escape_value($kid);
+      $institution = $db->escape_value($institution);
 
       //Sprawdzam czy użytkownik o podanym adresie email jest już zapisany w bazie
       $name_check = self::find_by_sql("SELECT email FROM users WHERE email='{$email}'");
@@ -91,7 +93,7 @@
         return "Użytkownik o adresie <strong>$email</strong> już istnieje. Wpisz proszę inny adres email.";
       }
 
-      if($name && $email && $password && $repeat_password && $phone)
+      if($name && $email && $password && $repeat_password && $phone && $kid && $institution)
       {
         if ($password == $repeat_password)
         {
@@ -101,7 +103,7 @@
             $password = md5($password);
             $activation_key = md5(rand(23456789, 98765432));
 
-            $new_user = self::find_by_sql("INSERT INTO users VALUES (NULL, '{$email}', '{$password}', '{$name}', '{$phone}', 'user', '0', '{$activation_key}', CURRENT_TIMESTAMP)");
+            $new_user = self::find_by_sql("INSERT INTO users VALUES (NULL, '{$email}', '{$password}', '{$name}', '{$phone}', '{$kid}', '{$institution}', 'user', '0', '{$activation_key}', CURRENT_TIMESTAMP)");
 
             if($new_user)
             {
@@ -127,18 +129,12 @@
 							";
 
               if(!$mail->Send()) {
-                  return "Mam problem z wysłaniem tej wiadomości. Proszę zadzwoń do mnie na nr 605 335 875";
+                  return "Mam problem z wysłaniem wiadomości z linkiem aktywacyjnym. Proszę zadzwoń do mnie na nr 605 335 875 lub napisz na foto.annaosiak@gmail.com";
               }
               else {
                   echo "Dziękuję za wypełnienie formularza. Na podany email została wysłana wiadomość z linkiem aktywującym Twoje konto.";
               }
-
             }
-
-
-
-
-
             return $last_id;
           }
         } else {
@@ -147,10 +143,5 @@
       } else {
         return "Wypełnij proszę wszystkie pola";
       }
-
-
-
-
     }
-
   }
