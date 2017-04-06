@@ -20,10 +20,10 @@
   		if($check_num == 1)
       {
         $activate = User::find_by_sql("UPDATE users SET activate='1' WHERE id='{$id}'");
-  			$message = "Twoje konto zaosało aktywowane. Teraz możesz w pełni korzystać z serwisu.";
+  			$message = "Twoje konto zostało aktywowane. Teraz możesz w pełni korzystać z serwisu.";
         $button  = '<a class="btn btn-primary" href="login">Zaloguj się</a>';
   		}	else {
-  			$message = "Brak takiego Klienta w bazie lub niepoprawny kod aktywacji.";
+  			$message = "Nie znalazłem takiego konta lub niepoprawny kod aktywacji.";
       }
     }
     else {
@@ -44,9 +44,6 @@
 <?php echo $view->showHeader("Aktywacja", "activate.php"); ?>
 
 <body>
-	<!-- Live Reload Script -->
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
-
 	<div class="container">
 		<h1>Aktywacja nowego Klienta</h1>
 

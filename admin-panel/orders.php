@@ -1,5 +1,5 @@
 <?php
-	//error_reporting(E_ALL - E_WARNING);
+	error_reporting(E_ALL - E_WARNING);
 
 	require_once('../class/class.db.php');
 	require_once('../class/class.post.php');
@@ -16,7 +16,7 @@
 		header("Location: login");
 	}
 
-	$result = $db->queryDb("SELECT id_strony, url_text, title, date FROM strony");
+	$result = $db->queryDb("SELECT o.id, u.name, o.total_order FROM orders o, users u WHERE u.id = o.user_id");
 
 ?>
 
@@ -28,35 +28,34 @@
 <body>
 
 	<div class="container">
-		<h1>Admin panel</h1>
+		<h1>Zestawienie zamówień</h1>
 
-		<a class="btn btn-default" href="post-new" role="button">Nowa strona</a>
-		<a class="btn btn-default" href="orders" role="button">Zamówienia</a>
+		<a class="btn btn-default" href="index" role="button">Admin panel</a>
 		<a class="fright" href="logout">Wyloguj</a>
 
 
-		<h2>Lista wszystkich stron</h2>
+		<h2>Lista wszystkich zamówień</h2>
 
 		<table class="table">
 
 			<tr>
-				<th>ID strony</th> <th>Tytuł strony</th> <th>Data publikacji</th>
+				<th>Lp</th> <th>Numer zamówienia</th> <th>Kto zamawia</th> <th>Na kwotę</th>
 			</tr>
 
 			<?php
 				if($result)
 				{
+					$lp = 1;
 					while($row = $result->fetch_object())
 					{
 						echo "<tr>";
-							echo "<td> {$row->id_strony} </td>
-								  <td> <a href='{$adres->get_host()}{$row->url_text}'><strong>{$row->title}</strong></a>
-								  	   <div><a href='{$adres->get_host_katalog()}admin-panel/post-edit?post={$row->id_strony}'>edytuj</a> <span>|</span> <a>usuń</a></div>
-								  </td>
-								  <td> {$row->date} </td>";
+							echo "<td> {$lp} </td>
+										<td> {$row->id} </td>
+								  	<td> {$row->name} </td>
+								  	<td> {$row->total_order} </td>";
 						echo "</tr>";
+						$lp++;
 					}
-
 					$result->free();
 				}
 			 ?>

@@ -43,16 +43,17 @@
 		if($_GET['action'] == "del")
 		{
 			$id = $db->escape_value($_POST['id']);
-			//aktualizuję bazę
-			if ($db->queryDb("UPDATE cart SET status='0' WHERE cart_id='{$cart_id}' AND id='{$id}' AND photo='{$photo}' "))
+			$cena = $db->escape_value($_POST['cena']);
+			//aktualizuję bazę - usuwam pozycję z koszyka, status = 2 oznacza że użytkownik kliknął przycisk "Usuń z koszyka"
+			if ($db->queryDb("UPDATE cart SET status='2' WHERE cart_id='{$cart_id}' AND id='{$id}' AND photo='{$photo}' "))
 			{
+				$_SESSION['total_orders'] = $_SESSION['total_orders'] - $cena;
 				//sprawdzam aktualną ilość pozycji w koszyku
 				$count = $db->queryDb("SELECT photo FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
 				//zwracam ilość pozycji do skryptu .js
 				echo $count->num_rows;
+				// echo $_SESSION['total_orders'];
 			}
 		}
 
 	}
-
-	//var_dump($_SESSION);

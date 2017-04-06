@@ -100,6 +100,7 @@
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-default" data-dismiss="modal">Wróć do galerii</button>
+									<a href="cart-show" class="btn btn-primary">Idź do koszyka</a>
 								</div>
 							</div> <!-- /.modal-content -->
 						</div><!-- /.modal-dialog -->
@@ -114,11 +115,12 @@
 			$id_table = basename($file, ".jpg");
 
 			$oferta = '<table id="'.$id_table.'" class="table table-striped">';
+			$oferta .= '<p class="text-center text-danger"><strong>Aby dodać do koszyka wybrany produkt, zaznacz pole przy formacie zdjęcia a następnie kliknij przycisk "Kupuję"</strong>.</p>';
 			$oferta .= '<tr> <th>&nbsp;</th> <th>Format</th> <th>Cena</th> <th>Ilość</th> <th>Tekst na zdjęciu</th> <th>&nbsp;</th></tr>';
 
 			$oferta .= $this->showOfertaForeach("ZdjeciaPortretowe", "Zdjęcie portretowe", $path, $file);
-			$oferta .= $this->showOfertaForeach("KartkaSwiateczna", "Kartka świąteczna", $path, $file);
-			$oferta .= $this->showOfertaForeach("ZestawKartek", "Zestaw 6 kartek świątecznych", $path, $file);
+			// $oferta .= $this->showOfertaForeach("KartkaSwiateczna", "Kartka świąteczna", $path, $file);
+			// $oferta .= $this->showOfertaForeach("ZestawKartek", "Zestaw 6 kartek świątecznych", $path, $file);
 			$oferta .= $this->showOfertaForeach("ZdjecieDoPortfela", "Zestaw 10 zdjęć do portfela", $path, $file);
 			$oferta .= $this->showOfertaForeach("ZdjecieGrupowe", "Zdjęcie grupowe", $path, $file);
 			$oferta .= $this->showOfertaForeach("ZdjeciaWmagnesie", "Zdjęcie w formie magnesu", $path, $file);
@@ -148,20 +150,30 @@
 				$sztuki_id = $check_id.'-sztuki';
 				$napis_id = $check_id.'-napis';
 				$przycisk_id = $check_id.'-btn';
+				$tr_id = $check_id.'-tr';
 
 				if($index == 0){
-					$oferta .= '<tr>
+					$oferta .= '<tr id="'.$tr_id.'">
 												<td scope="row">'. $naglowekTabeli .' <input type="checkbox" id="'.$check_id.'"></td>';
 				}
 				elseif($index > 0) {
-					$oferta .= '<tr>
+					$oferta .= '<tr id="'.$tr_id.'">
 												<td scope="row"><input type="checkbox" id="'.$check_id.'"></td>';
 				}
+				$jednostka = 'szt.';
+
+				if($nazwaMetody == 'ZdjecieDoPortfela')
+				{
+					$jednostka = 'zest.';
+				} else {
+					$jednostka = 'szt.';
+				}
+
 
 				$oferta .= '	<td>'.$format.' cm</td> <td>'.$cena.' zł</td>
-											<td><input id="'.$sztuki_id.'" disabled="disabled" class="sztuki" type="text" name="szt" value="0" /> szt</td>
+											<td><input id="'.$sztuki_id.'" disabled="disabled" class="sztuki" type="text" name="szt" value="0" /> '.$jednostka.'</td>
 											<td><input id="'.$napis_id.'" class="napis" type="text" placeholder="Napis + 1zł" name="napis" /></td>
-											<td><button type="button" class="btn btn-primary btn-xs" id="'.$przycisk_id.'" disabled="disabled" onclick="addToCart(\''. $path . $file . '.jpg\', \''.$naglowekTabeli.'\', \''.$format.'\', \''.$cena.'\', \''.$sztuki_id.'\', \''.$napis_id.'\')">Kupuję</button></td>
+											<td><button type="button" class="btn btn-primary btn-xs" id="'.$przycisk_id.'" disabled="disabled" onclick="addToCart(\''. $path . $file . '.jpg\', \''.$naglowekTabeli.'\', \''.$format.'\', \''.$cena.'\', \''.$sztuki_id.'\', \''.$napis_id.'\', \''.$tr_id.'\')">Kupuję</button></td>
 										</tr>';
 				$index++;
 			}
@@ -169,6 +181,18 @@
 			return $oferta;
 		}
 
+		/**
+		 * Metoda wyświetla zdjęcia dodane do koszyka w pliku cart-show.php
+		 * @param  [type] $photo  [description]
+		 * @param  [type] $id     [description]
+		 * @param  [type] $item   [description]
+		 * @param  [type] $rodzaj [description]
+		 * @param  [type] $format [description]
+		 * @param  [type] $cena   [description]
+		 * @param  [type] $ilosc  [description]
+		 * @param  [type] $napis  [description]
+		 * @return [type]         [description]
+		 */
 		public function showCart($photo, $id, $item, $rodzaj, $format, $cena, $ilosc, $napis)
 		{
 			$photo_name = basename($photo, ".jpg");
@@ -176,11 +200,20 @@
 			$row = '
 				<tr id="item-'.$item.'">
 					<td><div><img src="' . $photo . '" class="img-responsive"></div></td>
-					<td>' . $photo_name . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\', \'' . $id . '\')"> <span>&times;</span> Usuń z koszyka</button></div>
+					<td>' . $photo_name . '<div><button type="submit" class="btn btn-xs rm-form-cart" onclick="delFromCart(\'' . $photo . '\', \'' . $id . '\', \'' . $cena . '\')"> <span>&times;</span> Usuń z koszyka</button></div>
 			';
 
 			if($napis != ""){
 				$row .= '<div class="napis text-primary">Z napisem: ' . $napis . '</div>';
+			}
+
+			$jednostka = 'szt.';
+
+			if($rodzaj == 'Zestaw 10 zdjęć do portfela')
+			{
+				$jednostka = 'zest.';
+			} else {
+				$jednostka = 'szt.';
 			}
 
 			$row .= '
@@ -188,7 +221,43 @@
 					<td>' . $rodzaj . '</td>
 					<td>' . $format . ' cm</td>
 					<td>' . $cena . ' zł</td>
-					<td>' . $ilosc . ' szt.</td>
+					<td>' . $ilosc . ' '.$jednostka.'</td>
+					<td><b id="item-cena-'.$item.'">' . number_format($ilosc * $cena, 2, ',', ' ') . ' zł</b></td>
+				</tr>
+			';
+
+			return $row;
+		}
+
+
+		public function order_summary($photo, $id, $item, $rodzaj, $format, $cena, $ilosc, $napis)
+		{
+			$photo_name = basename($photo, ".jpg");
+
+			$row = '
+				<tr id="item-'.$item.'">
+					<td>' . $photo_name . '
+			';
+
+			if($napis != ""){
+				$row .= '<div class="napis text-primary">Z napisem: ' . $napis . '</div>';
+			}
+
+			$jednostka = 'szt.';
+
+			if($rodzaj == 'Zestaw 10 zdjęć do portfela')
+			{
+				$jednostka = 'zest.';
+			} else {
+				$jednostka = 'szt.';
+			}
+
+			$row .= '
+					</td>
+					<td>' . $rodzaj . '</td>
+					<td>' . $format . ' cm</td>
+					<td>' . $cena . ' zł</td>
+					<td>' . $ilosc . ' '.$jednostka.'</td>
 					<td><b id="item-cena-'.$item.'">' . number_format($ilosc * $cena, 2, ',', ' ') . ' zł</b></td>
 				</tr>
 			';

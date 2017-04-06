@@ -11,17 +11,18 @@
 	{
 		$post_id = $db->escape_value($_GET['post']);
 
-		$result = $db->queryDb("SELECT url_text, title, content, folder FROM strony WHERE id_strony='$post_id'");
+		$result = $db->queryDb("SELECT url_text, title, content, folder, pass FROM strony WHERE id_strony='$post_id'");
 
 		if ($result->num_rows == 1)
 		{
 			while($row = $result->fetch_object())
 			{
-				$clearUrl = $post->clearUrl($row->url_text, $adres->getKatalog());
+				$clearUrl = $post->clearUrl($row->url_text, $adres->get_katalog());
 				$post->setUrlText($clearUrl);
 				$post->setTitle($row->title);
 				$post->setContent($row->content);
 				$post->setFolder($row->folder);
+				$post->set_password($row->pass);
 			}
 		}
 
@@ -29,26 +30,30 @@
 	}
 
 	//aktualizacja posta
-	if (!empty($_POST['title']) && !empty($_POST['content']))
+	if (!empty($_POST['title']))
 	{
 		$post->setUrlText($_POST['url']);
 		$post->setTitle($_POST['title']);
 		$post->setContent($_POST['content']);
 		$post->setPostId($_POST['post_id']);
 		$post->setFolder($_POST['folder']);
+		$post->set_password($_POST['pass']);
 
 		$post_id = $db->escape_value($post->getPostId());
 		$title = $db->escape_value(trim($post->getTitle()));
 		$content = $db->escape_value(trim($post->getContent()));
-		$url_text = $db->escape_value($adres->getKatalog() . $post->plCharset($post->getUrlText()));
+		$url_text = $db->escape_value($adres->get_katalog() . $post->plCharset($post->getUrlText()));
 		$folder = $db->escape_value(trim($post->getFolder()));
+		$password = $db->escape_value(trim($post->get_password()));
 
-		if ($db->queryDb("UPDATE strony SET url_text='$url_text', title='$title', content='$content', folder='$folder' WHERE id_strony='$post_id'"))
+		if ($db->queryDb("UPDATE strony SET url_text='$url_text', title='$title', content='$content', folder='$folder', pass='$password' WHERE id_strony='$post_id'"))
 		{
 			//echo "Aktualizacja poprawna";
 			header("Location: index");
 		}
 	}
+	//var_dump($post->getTitle());
+
 ?>
 
 <!DOCTYPE html>
@@ -67,19 +72,23 @@
 		<form action="" method="post">
 			<div class="form-group">
 				<label for="title">Tytuł wpisu</label>
-				<input class="form-control" type="text" name="title" placeholder="Wprowadź tytuł" value="<?php if(!empty($post->getTitle())) {echo $post->getTitle();} ?>">
+				<input class="form-control" type="text" name="title" placeholder="Wprowadź tytuł" value="<?php $title = $post->getTitle();  if(!empty($title)) {echo $title;} ?>">
 			</div>
 			<div class="form-group">
 				<label for="url">Bezopśredni odnośnik</label>
-				<input class="form-control" type="text" name="url" value="<?php if(!empty($post->getUrlText())) {echo $post->getUrlText();} ?>">
+				<input class="form-control" type="text" name="url" value="<?php $url = $post->getUrlText(); if(!empty($url)) {echo $url;} ?>">
 			</div>
 			<div class="form-group">
 				<label for="content">Treść wpisu</label>
-				<textarea class="form-control" name="content" id="" cols="30" rows="10"><?php if(!empty($post->getContent())) {echo $post->getContent();} ?></textarea>
+				<textarea class="form-control" name="content" id="" cols="30" rows="10"><?php $content = $post->getContent(); if(!empty($content)) {echo $content;} ?></textarea>
+			</div>
+			<div class="form-group">
+				<label for="folder">Hasło do strony</label>
+				<input class="form-control" type="text" name="pass" value="<?php $password = $post->get_password(); if(!empty($password)) {echo $password;} ?>" placeholder="Hasło do strony">
 			</div>
 			<div class="form-group">
 				<label for="folder">Nazwa katalogu ze zdjęciami</label>
-				<input class="form-control" type="text" name="folder" value="<?php if(!empty($post->getFolder())) {echo $post->getFolder();} ?>" placeholder="Nazwa katalogu ze zdjęciami">
+				<input class="form-control" type="text" name="folder" value="<?php $folder = $post->getFolder(); if(!empty($folder)) {echo $folder;} ?>" placeholder="Nazwa katalogu ze zdjęciami">
 			</div>
 			<div class="form-group">
 				<input class="btn btn-default" type="submit" value="Popraw">

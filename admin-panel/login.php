@@ -26,7 +26,7 @@
       {
         if ($found_user->user_status == "admin")
         {
-          $session->login($found_user);
+          $session->login($found_user, "admin");
           header("Location: index");
         }
         else {
@@ -45,6 +45,7 @@
     $username = "";
     $password = "";
   }
+
 ?>
 
 
@@ -54,8 +55,6 @@
 <?php echo $view->showHeader("Logowanie", ""); ?>
 
 <body>
-	<!-- Live Reload Script -->
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 	<div class="container">
 		<h1>Logowanie</h1>

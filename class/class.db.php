@@ -4,9 +4,9 @@
 	class Db {
 
 		private $host = 'localhost';
-		private $user = 'root';
-		private $password = '';
-		private $dbname = 'adresy-url';
+		private $user = 'yih98459_shop';
+		private $password = 'DErlPhAnGy';
+		private $dbname = 'yih98459_sklep';
 
 		private $mysqli;
 

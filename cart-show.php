@@ -6,7 +6,6 @@
 
 	/* rozpocznij sesję */
 	require_once('class/class.session.php');
-	var_dump($_SESSION);
 
 	require_once('class/class.db.php');
 	require_once('class/class.view.php');
@@ -20,59 +19,72 @@
 	<?php echo $view->showHeader("Koszyk", null); ?>
 
 	<body>
-		<!-- Live Reload Script -->
-		<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+		<!-- skrypt wywołuje cart-action.php i usuwa pozycję z koszyka -->
+		<script>
+			function delFromCart(path, id, cena)
+			{
+				var _id = id;
+				$.ajax({
+					type: 'post',
+					url: 'cart-action.php?action=del',
+					data: {'path':path, 'id':id, 'cena':cena},
+					success: function(sucdata){
+						//pobieram z tabeli pole wartość dla usuwanej pozycji
+						var wartosc = $("#item-cena-" + _id).html();
+						//console.log('Wartosc = ' + wartosc);
+
+						//zamieniam przecinek na kropkę ponieważ Funkcja parseFloat wymaga,
+						//aby punktem dziesiętnym była kropka, a nie przecinek.
+						//Zastosowanie przecinka spowoduje pominięcie części ułamkowej.
+						wartosc = wartosc.replace(",", ".");
+						//Przetwarza argument w postaci łańcucha znaków zwracając liczbę zmiennoprzecinkową.
+						wartosc = parseFloat(wartosc);
+
+						var suma = $("#suma").html();
+						suma = suma.replace(",", ".");
+						suma = parseFloat(suma);
+						suma = suma - wartosc;
+						//formatowanie do 2 miejsc po przecinku
+						suma = suma.toFixed(2);
+						suma = suma.replace(".", ",");
+						$("#suma").html(suma + " zł");
+
+						$(".counter").html(sucdata);
+						//usuwam kliknięty wiersz z tabeli
+						$("#item-" + _id).remove();
+					}
+				});
+			}
+		</script>
+
+		<?php
+			if(isset($_SESSION['cart_id']))
+			{
+				// głowny SELECT do wyświetlania koszyka
+				$count = $db->queryDb("SELECT photo, id, rodzaj, format, cena, ilosc, tekst FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
+			}
+		?>
+
+		<div class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<?php  //liczę ilość pozycji w koszyku dla podanego id koszyka  ?>
+				<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
+
+				<?php
+					if(!$session->is_logged_in())
+					{
+						echo '<a href="login" class="fright">Logowanie</a>';
+					} else {
+						echo '<a class="fright" href="logout">Wyloguj</a>';
+					}
+				?>
+
+			</div>
+		</div>
+
+
 
 		<div class="container">
-
-			<!-- skrypt wywołuje cart-action.php i usuwa pozycję z koszyka -->
-			<script>
-				function delFromCart(path, id)
-				{
-					var _id = id;
-					$.ajax({
-						type: 'post',
-						url: 'cart-action.php?action=del',
-						data: {'path':path, 'id':id},
-						success: function(sucdata){
-							//pobieram z tabeli pole wartość dla usuwanej pozycji
-							var wartosc = $("#item-cena-" + _id).html();
-							//console.log('Wartosc = ' + wartosc);
-
-							//zamieniam przecinek na kropkę ponieważ Funkcja parseFloat wymaga,
-							//aby punktem dziesiętnym była kropka, a nie przecinek.
-							//Zastosowanie przecinka spowoduje pominięcie części ułamkowej.
-							wartosc = wartosc.replace(",", ".");
-							//Przetwarza argument w postaci łańcucha znaków zwracając liczbę zmiennoprzecinkową.
-							wartosc = parseFloat(wartosc);
-
-							var suma = $("#suma").html();
-							suma = suma.replace(",", ".");
-							suma = parseFloat(suma);
-							suma = suma - wartosc;
-							//formatowanie do 2 miejsc po przecinku
-							suma = suma.toFixed(2);
-							suma = suma.replace(".", ",");
-							$("#suma").html(suma + " zł");
-
-							$(".counter").html(sucdata);
-							//usuwam kliknięty wiersz z tabeli
-							$("#item-" + _id).remove();
-						}
-					});
-				}
-			</script>
-
-			<?php
-				if(isset($_SESSION['cart_id']))
-				{
-					// głowny SELECT do wyświetlania koszyka
-					$count = $db->queryDb("SELECT photo, id, rodzaj, format, cena, ilosc, tekst FROM cart WHERE cart_id='{$_SESSION['cart_id']}' AND status='1'");
-				}
-			?>
-
-			<?php  //liczę ilość pozycji w koszyku dla podanego id koszyka  ?>
-			<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
 
 			<?php
 				//Wyświetla aktualną zawartość koszyka
@@ -96,6 +108,7 @@
 						{
 								echo $view->showCart($item->photo, $item->id, $item->id, $item->rodzaj, $item->format, $item->cena, $item->ilosc, $item->tekst);
 								$suma = $suma + ($item->ilosc * $item->cena);
+								$_SESSION['total_orders'] = $suma;
 						}
 					}
 
@@ -103,7 +116,7 @@
 					echo
 						'
 					 		<tr class="active">
-								<th colspan="5"></th> <th>Łącznie:</th> <th id="suma">' . number_format($suma, 2, ',', ' ') . ' zł</th>
+								<th colspan="5"></th> <th>Łącznie:</th> <th id="suma" style="font-size: 1.3em;">' . number_format($suma, 2, ',', ' ') . ' zł</th>
 							</tr>
 
 							</table>
@@ -126,13 +139,21 @@
 				//jeśli jest coś w koszyku wyświetl przycisk "Realizuj zamowienie"
 				if (isset($count))
 				{
-					echo "<a class='btn btn-primary pull-right' href='" . $adres->get_katalog() . "order' role='button'>Realizuj zamówienie</a>";
+					if(!$session->is_logged_in())
+					{
+						echo '<a href="login" class="btn btn-primary fright">Zaloguj się <br> aby zrealizować zamówienie</a>';
+					} else {
+						echo "<form action='order' method='post' class='pull-right'><button type='submit' name='submit' class='btn btn-primary'><span style='font-size: 1.3em;'>Zamawiam</span> <br> z obowiązkiem zapłaty</button></form>";
+					}
+
 				}
+
 
 				//echo "<input class='btn btn-default' type='button' value='Wróć do galerii' onClick='history.back();' />";
 
 			?>
 			<br><br><br>
+			
 		</div>
 	</body>
 	</html>

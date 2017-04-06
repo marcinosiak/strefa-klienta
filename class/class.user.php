@@ -74,7 +74,7 @@
     //   $phone = $db->escape_value($this->user_phone);
     // }
 
-    public static function register($name="", $email="", $password="", $repeat_password="", $phone="", $kid="", $institution="")
+    public static function register($name="", $email="", $password="", $repeat_password="", $phone="", $kid="", $institution="", $group="", $agree_www="", $agree_ad="", $agree_email="")
     {
       global $db;
 
@@ -85,6 +85,10 @@
       $phone = $db->escape_value($phone);
       $kid = $db->escape_value($kid);
       $institution = $db->escape_value($institution);
+      $group = $db->escape_value($group);
+      $agree_www = $db->escape_value($agree_www);
+      $agree_ad = $db->escape_value($agree_ad);
+      $agree_email = $db->escape_value($agree_email);
 
       //Sprawdzam czy użytkownik o podanym adresie email jest już zapisany w bazie
       $name_check = self::find_by_sql("SELECT email FROM users WHERE email='{$email}'");
@@ -93,7 +97,7 @@
         return "Użytkownik o adresie <strong>$email</strong> już istnieje. Wpisz proszę inny adres email.";
       }
 
-      if($name && $email && $password && $repeat_password && $phone && $kid && $institution)
+      if($name && $email && $password && $repeat_password && $phone && $kid && $institution && $group)
       {
         if ($password == $repeat_password)
         {
@@ -103,7 +107,7 @@
             $password = md5($password);
             $activation_key = md5(rand(23456789, 98765432));
 
-            $new_user = self::find_by_sql("INSERT INTO users VALUES (NULL, '{$email}', '{$password}', '{$name}', '{$phone}', '{$kid}', '{$institution}', 'user', '0', '{$activation_key}', CURRENT_TIMESTAMP)");
+            $new_user = self::find_by_sql("INSERT INTO users VALUES (NULL, '{$email}', '{$password}', '{$name}', '{$phone}', '{$kid}', '{$institution}', '{$group}', '{$agree_www}', '{$agree_ad}', '{$agree_email}', 'user', '0', '{$activation_key}', CURRENT_TIMESTAMP)");
 
             if($new_user)
             {
@@ -115,27 +119,37 @@
               $mail->CharSet = "UTF-8";
               $mail->IsSMTP();  // telling the class to use SMTP
               $mail->IsHTML(true);
-              //$mail->Host = "localhost"; // SMTP server mailhost.sheffield.ac.uk
-              $mail->Host = "mailhost.sheffield.ac.uk"; // SMTP server
-              $mail->SetFrom("foto.annaosiak@gmail.com", "Anna Osiak - Fotograf");
-              $mail->AddAddress($email);
-              $mail->Subject  = "Aktywacja konta w Strefie Klienta na annaosiak.pl";
-              $mail->Body     = "
-								Witaj $name\n\n
+              $mail->SMTPDebug  = 0; // enables SMTP debug information (for testing)
+          												   // 1 = errors and messages
+          												   // 2 = messages only
+              $mail->SMTPAuth   = true;                  // enable SMTP authentication
+           		$mail->SMTPSecure = "ssl";
+           		$mail->Host       = "az0024.srv.az.pl";    // sets the SMTP server
+           		$mail->Port       = 465;                    // set the SMTP port for the GMAIL server
+           		$mail->Username   = "sklep@annaosiak.pl"; // SMTP account username
+           		$mail->Password   = "az_sklep-2017";        // SMTP account password
 
-								Aby w pełni korzystać ze Strefy Klienta na annaosiak.pl, potrzebujesz tylko aktywować swoje konto.\n
-                Proszę kliknij w poniższy link aktywacyjny lub wklej go do swojej przeglądarki
-								http://localhost/strefa-klientay/activate.php?id=$last_id&code=$activation_key\n\n
-							";
+
+              $mail->SetFrom("sklep@annaosiak.pl", "Sklep - Anna Osiak");
+              $mail->AddAddress($email);
+              $mail->Subject  = "Aktywacja konta w sklepie na annaosiak.pl";
+              //$mail->Body     = "
+              $mail->MsgHTML("
+								Witaj $name.<br><br>
+
+								Aby w pełni korzystać ze Strefy Klienta na annaosiak.pl, potrzebujesz tylko aktywować swoje konto.<br>
+                Proszę kliknij w poniższy link aktywacyjny lub wklej go do swojej przeglądarki<br><br>
+                <a href='http://annaosiak.pl/sklep/activate.php?id=$last_id&code=$activation_key'>http://annaosiak.pl/sklep/activate.php?id=$last_id&code=$activation_key</a>
+								<br><br>
+							");
 
               if(!$mail->Send()) {
                   return "Mam problem z wysłaniem wiadomości z linkiem aktywacyjnym. Proszę zadzwoń do mnie na nr 605 335 875 lub napisz na foto.annaosiak@gmail.com";
               }
               else {
-                  echo "Dziękuję za wypełnienie formularza. Na podany email została wysłana wiadomość z linkiem aktywującym Twoje konto.";
+                  return "Dziękuję za wypełnienie formularza. Na podany email została wysłana wiadomość z linkiem aktywującym Twoje konto.";
               }
             }
-            return $last_id;
           }
         } else {
           return "Wprowadzone hasła nie są takie same. Wpisz proszę jednakowe hasła";

@@ -25,6 +25,7 @@ RewriteRule ^admin-panel/([a-z0-9\-]+)/?$  admin-panel/$1.php
 #RewriteRule ^[a-z0-9\-/]+\.html$  index.php
 #RewriteRule ^[a-z0-9\-/]+\.php$  index.php
 
+
 RewriteRule cart-show$  cart-show.php
 RewriteRule order$  order.php
 RewriteRule login$  login.php
@@ -32,4 +33,5 @@ RewriteRule logout$  logout.php
 RewriteRule register$  register.php
 RewriteRule activate$  activate.php
 
-RewriteRule ^[a-z0-9\-/]+$  index.php
+
+RewriteRule ^[a-z0-9\-/]+$  index.php [L]

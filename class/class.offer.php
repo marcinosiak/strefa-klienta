@@ -1,28 +1,28 @@
 <?php
   $offer = new Offer();
-  
+
   class Offer {
 
     private $zdjeciaPortretowe = array('10x15' => 6, '13x18' => 7, '15x21' => 8, '20x30' => 11);
-    private $kartkaSwiateczna = array('10x15' => 7);
-    private $zestawKartek = array('10x15' => 30);
+    // private $kartkaSwiateczna = array('10x15' => 7);
+    // private $zestawKartek = array('10x15' => 30);
     private $zdjecieDoPortfela = array('3.5x4.5' => 10);
     private $zdjecieGrupowe = array('15x21' => 8, '20x30' => 10);
     private $zdjeciaWmagnesie = array('5x7.5' => 6, '6x9' => 7, '10x15' => 11, '15x21' => 16);
     private $obrazNaPlotnie = array('30x40' => 40, '40x60' => 55, '50x70' => 65, '60x90' => 85);
-    private $plakat = array('40x60' => 17, '50x70' => 23, '60x84' => 30);
+    private $plakat = array('40x60' => 17, '50x70' => 23);
 
     public function __call($name, $params)
 		{
 			if($params[0] == "ZdjeciaPortretowe") {
 				return $this->getZdjeciaPortretowe();
 			}
-      elseif ($params[0] == "KartkaSwiateczna") {
-        return $this->getKartkaSwiateczna();
-      }
-      elseif ($params[0] == "ZestawKartek") {
-        return $this->getZestawKartek();
-      }
+      // elseif ($params[0] == "KartkaSwiateczna") {
+      //   return $this->getKartkaSwiateczna();
+      // }
+      // elseif ($params[0] == "ZestawKartek") {
+      //   return $this->getZestawKartek();
+      // }
       elseif ($params[0] == "ZdjecieDoPortfela") {
         return $this->getZdjecieDoPortfela();
       }

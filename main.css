@@ -1,3 +1,17 @@
+body
+{
+	padding: 3em 0;
+}
+
+.navbar{
+	padding: 1em;
+}
+
+.navbar a{
+	color: #ccc;
+	font-size: 1.1em;
+}
+
 .fright
 {
 	float: right;
@@ -90,4 +104,9 @@ input.napis
 
 input[type="checkbox"] {
 	float: right;
+}
+
+.order .well
+{
+	font-size: 1.3em;
 }

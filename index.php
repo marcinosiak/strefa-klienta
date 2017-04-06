@@ -14,7 +14,6 @@
 
 	/* rozpocznij sesję */
 	require_once('class/class.session.php');
-	var_dump($_SESSION);
 
 	require_once('class/class.adres.php');
 	require_once('class/class.db.php');
@@ -40,74 +39,91 @@
 <!DOCTYPE html>
 <html lang="pl">
 
-<?php echo $view->showHeader("Strefa klienta", null); ?>
+<?php echo $view->showHeader("Sklep ze zdjęciami", null); ?>
 
 <body>
-	<!-- Live Reload Script -->
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+	<script>
+		//skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku
+		function addToCart(path, rodzaj, format, cena, sztuki_id, napis_id, tr_id)
+		{
+			sztuki_id = "#" + sztuki_id;
+			var ilosc = $(sztuki_id).val();
 
-	<div class="container">
+			napis_id = "#" + napis_id;
+			var napis = $(napis_id).val();
 
-		<script>
-			//skrypt wywołuje cart-action.php i zwiększa licznik pozycji w koszyku
-			function addToCart(path, rodzaj, format, cena, sztuki_id, napis_id)
+			tr_id = "#" + tr_id;
+			//console.log(tr_id);
+			//var tr = $(tr_id).val();
+
+			// + 1 zł jeśli jest napis na zdjęciu
+			if (napis != "" && napis != " ")
 			{
-				sztuki_id = "#" + sztuki_id;
-				var ilosc = $(sztuki_id).val();
-
-				napis_id = "#" + napis_id;
-				var napis = $(napis_id).val();
-
-				// + 1 zł jeśli jest napis na zdjęciu
-				if (napis != "" && napis != " ") {
-					cena = eval(cena) + 1;
-					//console.log('Cena zwiększona = ' + cena);
-				}
-
-				$.ajax({
-					type: 'post',
-					url: 'cart-action.php?action=add',
-					data: {
-						'path':			path,
-						'rodzaj':		rodzaj,
-						'format':		format,
-						'cena':			cena,
-						'ilosc':		ilosc,
-						'tekst':		napis
-					},
-					success: function(sucdata){
-						$(".counter").html(sucdata);
-					}
-				});
+				cena = eval(cena) + 1;
+				//console.log('Cena zwiększona = ' + cena);
 			}
 
-			//obsługa kliknięcia w checkboxa na formularzu zamwóienia
-			$(document).on('click', 'input[type="checkbox"]', function(){
-    		//alert(this.id);
-				var id_sztuki = "#" + this.id + "-sztuki";
-				var id_przycisk = "#" + this.id + "-btn";
-
-				if(document.getElementById(this.id).checked){
-					$(id_sztuki).prop('disabled', false);
-					$(id_sztuki).val('1');
-					$(id_przycisk).prop('disabled', false);
-				}
-				else{
-					$(id_sztuki).prop('disabled', true);
-					$(id_sztuki).val('0');
-					$(id_przycisk).prop('disabled', true);
+			$.ajax({
+				type: 'post',
+				url: 'cart-action.php?action=add',
+				data: {
+					'path':			path,
+					'rodzaj':		rodzaj,
+					'format':		format,
+					'cena':			cena,
+					'ilosc':		ilosc,
+					'tekst':		napis
+				},
+				success: function(sucdata){
+					$(".counter").html(sucdata);
+					$(tr_id).css( "background-color", "#97d7f8" );
+					//console.log(tr_id);
 				}
 			});
+		}
 
-			//obsługa klawisza w polu z napisem dla zdjęcia
-			//$(document).on('keyup', 'input.napis', function(){
-    		//alert(this.id);
-			//});
+		//obsługa kliknięcia w checkboxa na formularzu zamwóienia
+		$(document).on('click', 'input[type="checkbox"]', function(){
+			//alert(this.id);
+			var id_sztuki = "#" + this.id + "-sztuki";
+			var id_przycisk = "#" + this.id + "-btn";
 
-		</script>
+			if(document.getElementById(this.id).checked){
+				$(id_sztuki).prop('disabled', false);
+				$(id_sztuki).val('1');
+				$(id_przycisk).prop('disabled', false);
+			}
+			else{
+				$(id_sztuki).prop('disabled', true);
+				$(id_sztuki).val('0');
+				$(id_przycisk).prop('disabled', true);
+			}
+		});
 
-		<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
-		<a href="login" class="fright">Logowanie</a>
+		//obsługa klawisza w polu z napisem dla zdjęcia
+		//$(document).on('keyup', 'input.napis', function(){
+			//alert(this.id);
+		//});
+
+	</script>
+
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<a href="cart-show">Koszyk (<span class="counter"><?php echo (isset($count) ? $count->num_rows : '0'); ?></span>)</a>
+
+			<?php
+				if(!$session->is_logged_in())
+				{
+					echo '<a href="login" class="fright">Logowanie</a>';
+				} else {
+					echo '<a class="fright" href="logout">Wyloguj</a>';
+				}
+			?>
+
+		</div>
+	</div>
+
+	<div class="container">
 
 		<?php
 
@@ -169,12 +185,10 @@
 						if ($pass_site == $row->pass)
 						{
 							$_SESSION['access'] = true;
-							//$_SESSION['access-info'] = "t1";
 							//i zapamiętaj podane hasło
 							$_SESSION['pass_site'] = $row->pass;
 						} else {
 							$_SESSION['access'] = false;
-							//$_SESSION['access-info'] = "f1";
 							echo $view->alertInfo('Błędne hasło. Wprowadź ponownie hasło');
 							echo $view->passForm();
 						}
@@ -201,15 +215,20 @@
 					if(!$row->folder == "")
 					{
 						$folder = new Folder($row->folder);
-						echo '<div class="row gallery">';
-
-						foreach ($folder->getFiles() as $file)
+						if($folder->get_is_folder())
 						{
-							//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
-							echo $view->showGallery($folder->getPath(), $file);
-						}
+							echo '<div class="row gallery">';
 
-						echo '</div>';
+							foreach ($folder->getFiles() as $file)
+							{
+								//http://www.dynamicdrive.com/style/csslibrary/item/css-popup-image-viewer/
+								echo $view->showGallery($folder->getPath(), $file);
+							}
+
+							echo '</div>';
+						} else {
+							echo $view->alertInfo('Nie ma takiego katalogu ze zdjęciami ('. $folder->getPath() . ')');
+						}
 					} else {
 						echo $view->alertInfo('Nie dołczono zdjęć lub niepoprawna nazwa katalogu ze zdjęciami');
 					}
@@ -217,7 +236,7 @@
 			}
 		} else {
 			//header("HTTP/1.0 404 Not Found");
-			echo $view->alertInfo('404 Nie znalazłem takiej strony');
+			echo $view->alertInfo('Wpisz proszę pełny adres strony, ktrą chcesz zobaczyć. Jeśli nie znasz adresu proszę o kontakt na foto.annaosiak@gmail.com');
 		}
 
 		?>

@@ -1,6 +1,6 @@
 <?php
 	$post = new Post();
-	
+
 	class Post {
 
 		private $postId;
@@ -9,6 +9,7 @@
 		private $content;
 		private $folder;
 		private $date;
+		private $password;
 
 		public function getPostId()
 		{
@@ -53,6 +54,15 @@
 		public function setContent($content)
 		{
 			$this->content = $content;
+		}
+
+		public function get_password()
+		{
+			return $this->password;
+		}
+
+		public function set_password($password){
+			$this->password = $password;
 		}
 
 		public function getFolder()

@@ -1,19 +1,23 @@
 <?php
-	
+
 	class Folder{
 
 		private $path = "photo/";
 		private $files = array(); //tablica z plikami z odczytanego katalogu
 		private $d; //instancja klady dir (Directory)
+		private $is_folder = false;
 
 		public function __construct($path)
 		{
 			$this->path = $this->path . $path;
 
+			if(is_dir($this->path))
+			{
 			//dir - klasa wbudowana w PHP
-			$this->d = dir($this->path);
-
-			$this->read();
+				$this->d = dir($this->path);
+				$this->read();
+				$this->is_folder = true;
+			}
 		}
 
 
@@ -27,6 +31,7 @@
 				}
 			}
 			//print_r($this->files);
+			sort($this->files);
 		}
 
 
@@ -41,10 +46,17 @@
 			return $this->files;
 		}
 
+		public function get_is_folder()
+		{
+			return $this->is_folder;
+		}
 
 		public function __destruct()
 		{
-			$this->d->close();
+			if(is_object($this->d))
+			{
+				$this->d->close();
+			}
 		}
 
 

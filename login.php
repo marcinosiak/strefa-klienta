@@ -7,10 +7,18 @@
   require_once('class/class.view.php');
   require_once('class/class.session.php');
 
+
+  if(isset($_SESSION["referer"]))
+  {
+    $url = basename($_SESSION['referer']);
+  } else {
+    $url = "index";
+  }
+
   //jeśli admin jest zalogowany, przejdż do panelu
   if($session->is_logged_in())
   {
-    header("Location: order");
+    header("Location: $url");
   }
 
   if(isset($_POST['submit']))
@@ -24,8 +32,10 @@
     {
       if ($found_user->activate == "1")
       {
-        $session->login($found_user);
-        header("Location: order");
+        $session->login($found_user, null);
+        //header("Location: cart-show");
+        header("Location: $url");
+
       }
       else {
         $message = "Użytkownik jest jeszcze nieaktywny. Sprawdź swoją pocztę i kliknij w link aktywacyjny.";
@@ -48,9 +58,6 @@
 <?php echo $view->showHeader("Logowanie", "login.php"); ?>
 
 <body>
-	<!-- Live Reload Script -->
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
-
 	<div class="container">
 		<h1>Logowanie</h1>
     <br>
@@ -71,7 +78,7 @@
 
             <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block">Zaloguj</button>
             <div>
-              <a href="register">Załóż konto</a> lub <a href="#">Nie pamiętasz hasła?</a>
+              <a href="register">Załóż konto</a> <!-- lub <a href="#">Nie pamiętasz hasła?</a> -->
             </div>
 
           </form>
