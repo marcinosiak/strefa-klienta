@@ -36,8 +36,8 @@
 			// formatuję końcową cenę zamowienia
 			isset($_SESSION['total_orders']) ? $total_orders = number_format($_SESSION['total_orders'], 2, ',', ' ') : $total_orders = "Błąd wyceny";
 
-			// dodaję zamwóienie do bazy danych
-			$new_order = $db->queryDb("INSERT INTO `orders` VALUES (NULL, '100-0', '{$user_id}', '{$cart_id}', '{$total_orders}')");
+			// dodaję zamwóienie do bazy danych			
+			$new_order = $db->queryDb("INSERT INTO `orders` VALUES (NULL, '100-0', '{$user_id}', '{$cart_id}', '{$total_orders}', CURRENT_TIMESTAMP)");
 
 			if ($new_order) {
 				//pobieram numer zamówienia = ostatni id dodany do bazy

@@ -16,7 +16,7 @@
 		header("Location: login");
 	}
 
-	$result = $db->queryDb("SELECT o.id, u.name, o.total_order FROM orders o, users u WHERE u.id = o.user_id");
+	$result = $db->queryDb("SELECT o.id, u.name, o.total_order, o.date FROM orders o, users u WHERE u.id = o.user_id");
 
 ?>
 
@@ -39,7 +39,7 @@
 		<table class="table">
 
 			<tr>
-				<th>Lp</th> <th>Numer zamówienia</th> <th>Kto zamawia</th> <th>Na kwotę</th>
+				<th>Lp</th> <th>Numer zamówienia</th> <th>Kto zamawia</th> <th>Na kwotę</th> <th>Kiedy</th>
 			</tr>
 
 			<?php
@@ -52,7 +52,8 @@
 							echo "<td> {$lp} </td>
 										<td> {$row->id} </td>
 								  	<td> {$row->name} </td>
-								  	<td> {$row->total_order} </td>";
+										<td> {$row->total_order} </td>
+										<td> {$row->date} </td>";
 						echo "</tr>";
 						$lp++;
 					}
