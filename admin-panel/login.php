@@ -8,7 +8,7 @@
   require_once('../class/class.session.php');
 
   //jeśli admin jest zalogowany, przejdż do panelu
-  if($session->is_logged_in())
+  if($session->is_logged_in_admin())
   {
     header("Location: index");
   }
@@ -26,8 +26,13 @@
       {
         if ($found_user->user_status == "admin")
         {
-          $session->login($found_user, "admin");
-          header("Location: index");
+          $session->login_admin($found_user);
+
+          if($session->is_logged_in_admin())
+        	{
+        		header("Location: index");
+        	}
+
         }
         else {
           $message = "Tylko dla administratora. Nie masz wystarczających uprawnień";
@@ -45,7 +50,6 @@
     $username = "";
     $password = "";
   }
-
 ?>
 
 

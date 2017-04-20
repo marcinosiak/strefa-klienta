@@ -7,17 +7,12 @@
 	require_once('../class/class.session.php');
 	require_once('../class/class.view.php');
 
-
-
-
-	//if(!$session->is_logged_in())
-	if(!$session->logged_in_admin)
+	if(!$session->is_logged_in_admin())
 	{
 		header("Location: login");
 	}
 
 	$result = $db->queryDb("SELECT id_strony, url_text, title, date FROM strony");
-
 ?>
 
 <!DOCTYPE html>

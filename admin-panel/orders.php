@@ -10,8 +10,8 @@
 
 
 
-	//if(!$session->is_logged_in())
-	if(!$session->logged_in_admin)
+	if(!$session->is_logged_in_admin())
+	//if(!$session->logged_in_admin)
 	{
 		header("Location: login");
 	}

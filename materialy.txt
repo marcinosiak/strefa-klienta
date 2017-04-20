@@ -1,3 +1,5 @@
 okna modalne
 http://nafrontendzie.pl/okna-modalne-bootstrap-wtyczka-jquery/
 http://v4-alpha.getbootstrap.com/components/modal/#live-demo
+
+https://www.codeofaninja.com/2015/08/simple-php-mysql-shopping-cart-tutorial.html
